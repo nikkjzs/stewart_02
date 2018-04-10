@@ -98,8 +98,8 @@ int main()
 	CDriver* pDrv = new CDriver();
 	string ep = "192.168.2.151";
 	string up = "111.111.111.111";
-	pDrv->CDriver::init(444,ep,888,
-		up, 111, 333);
+	pDrv->CDriver::init(444, up, 111,
+		ep, 888, 250 );
 	
 	//pDrv->init(up, 111, 333);
 	//pDrv->init();
