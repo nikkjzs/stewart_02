@@ -37,8 +37,8 @@ using namespace std;
 int main()
 {
 	CBase* pEqu = new CEquip();
-	string ep = "127.0.0.1";
-	pEqu->init(14,ep,13);
+	string ep = "125.125.122.83";
+	pEqu->init(888,ep,444);
 	pEqu->run(pEqu);
     return 0;
 }
