@@ -134,7 +134,8 @@ using boost::asio::ip::udp;
 class CUpper : public CBase
 {
 public:
-	CUpper(int localport, string targetIP, int targetport) : CBase(localport, targetIP, targetport)
+	//CUpper(int localport, string targetIP, int targetport) : CBase(localport, targetIP, targetport)
+	CUpper() : CBase()
 	{
 
 	}

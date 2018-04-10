@@ -20,20 +20,38 @@ using boost::asio::ip::udp;
 class CDriver : public CBase
 {
 public:
-	CDriver(int localport, string targetIP, int targetport) : CBase(localport, targetIP, targetport)
+	//CDriver(int localport, string targetIP, int targetport) : CBase(localport, targetIP, targetport)
+	CDriver() : CBase()
 	{
 
 	}
 
 	virtual void process_recv_data()
 	{
+		if (listRecv.empty() == false)
+		{
+			CMsgIP msgip = listRecv.back();
+			char* pBuf = msgip.buf;
+			if (pBuf[0] == 'a')
+			{
+				int i = 5;
+			}
+		}
+
+
 		//do nothing
 	}
 };
 
+using namespace std;
+
 int main()
 {
-
+	Sleep(10000);
+	CBase* pDrv = new CDriver();
+	string ep = "127.0.0.1";
+	pDrv->init(13,ep,14);
+	pDrv->run(pDrv);
     return 0;
 }
 

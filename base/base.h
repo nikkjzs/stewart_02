@@ -22,6 +22,7 @@ using namespace std;
 
 class CBase
 {
+public:
 	typedef struct _CMsgIP
 	{
 		udp::endpoint endpoint;
@@ -29,16 +30,23 @@ class CBase
 	}CMsgIP;
 
 public:
-	CBase(int localport, string targetIP, int targetport) : socket_(io_context_, udp::endpoint(udp::v4(), localport)), strand_(io_context_)
-	//CBase(int localport, string targetIP, int targetport) : socket_(io_context_), strand_(io_context_)
+	//CBase(int localport, string targetIP, int targetport) : socket_(io_context_, udp::endpoint(udp::v4(), localport)), strand_(io_context_)
+	CBase() : socket_(io_context_), strand_(io_context_)
 	{
+		//tar_endpoint_ = udp::endpoint(boost::asio::ip::address_v4::from_string(targetIP), targetport);
+	}
+
+	virtual void init(int localport, string targetIP, int targetport)
+	{
+		socket_.open(udp::v4());
+		socket_.bind(udp::endpoint(udp::v4(), localport));
 		tar_endpoint_ = udp::endpoint(boost::asio::ip::address_v4::from_string(targetIP), targetport);
-		//socket_.bind(udp::endpoint(udp::v4(), localport));
 	}
 
 	void run(CBase* pBase)
 	{
 		group.create_thread(boost::bind(&CBase::entry, pBase));
+		group.join_all();
 	}
 
 	void entry()
@@ -79,6 +87,9 @@ public:
 
 	void start_send()
 	{
+		//tmp
+		send_buffer_[0] = 'a';
+
 		socket_.async_send_to(boost::asio::buffer(send_buffer_), tar_endpoint_,
 			boost::asio::bind_executor(strand_, boost::bind(&CBase::handle_send, this))
 		);
