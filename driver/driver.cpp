@@ -31,7 +31,7 @@ public:
 		string targetIP, int targetport,int misec)
 	{
 		CBase::init(localport, supTargetIP, supTargetport);
-		tar_endpoint_ = udp::endpoint(boost::asio::ip::address_v4::from_string(targetIP), targetport);
+		CDriver::tar_endpoint_ = udp::endpoint(boost::asio::ip::address_v4::from_string(targetIP), targetport);
 		//timer_.expires_from_now(boost::posix_time::millisec(misec));
 		misec_ = misec;
 	}
@@ -78,9 +78,9 @@ public:
 	virtual void handle_send()
 	{
 		//tmp
-		CBase::send_buffer_[0] = 'b';
+		CDriver::send_buffer_[0] = 'b';
 
-		socket_.send_to(boost::asio::buffer(CBase::send_buffer_), CBase::tar_endpoint_);
+		socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
 		start_send();
 	}
 	
