@@ -62,27 +62,27 @@ public:
 		//do nothing
 	}
 
-	virtual void start_send()//realtime
-	{
-		
+	//virtual void start_send()//realtime
+	//{
+	//	
 
-		//boost::asio::deadline_timer timer(io_context_, boost::posix_time::millisec(1000));
-		timer_.expires_from_now(boost::posix_time::millisec(misec_));
-		timer_.async_wait(boost::bind(&CDriver::handle_send, this));
+	//	//boost::asio::deadline_timer timer(io_context_, boost::posix_time::millisec(1000));
+	//	timer_.expires_from_now(boost::posix_time::millisec(misec_));
+	//	timer_.async_wait(boost::bind(&CDriver::handle_send, this));
 
-		/*socket_.async_send_to(boost::asio::buffer(send_buffer_), tar_endpoint_,
-			boost::asio::bind_executor(strand_, boost::bind(&CBase::handle_send, this))
-		);*/
-	}
+	//	/*socket_.async_send_to(boost::asio::buffer(send_buffer_), tar_endpoint_,
+	//		boost::asio::bind_executor(strand_, boost::bind(&CBase::handle_send, this))
+	//	);*/
+	//}
 
-	virtual void handle_send()
-	{
-		//tmp
-		CDriver::send_buffer_[0] = 'b';
+	//virtual void handle_send()
+	//{
+	//	//tmp
+	//	CDriver::send_buffer_[0] = 'b';
 
-		socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
-		start_send();
-	}
+	//	socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
+	//	start_send();
+	//}
 	
 
 
@@ -95,11 +95,13 @@ public:
 int main()
 {
 	//Sleep(10000);
-	CDriver* pDrv = new CDriver();
+	//CDriver* pDrv = new CDriver();
+	CBase* pDrv = new CDriver();
 	string ep = "192.168.2.151";
 	string up = "111.111.111.111";
-	pDrv->CDriver::init(444, up, 111,
-		ep, 888, 250 );
+	pDrv->init(444, ep,888);
+	/*pDrv->CDriver::init(444, up, 111,
+		ep, 888, 250 );*/
 	
 	//pDrv->init(up, 111, 333);
 	//pDrv->init();

@@ -55,7 +55,7 @@ public:
 	virtual void entry()
 	{
 		start_receive();
-		start_send();
+		//start_send();
 		io_context_.run();
 	}
 
