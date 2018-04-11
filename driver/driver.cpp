@@ -49,8 +49,8 @@ int main()
 {
 	Sleep(10000);
 	CBase* pDrv = new CDriver();
-	string ep = "127.0.0.1";
-	pDrv->init(13,ep,14);
+	string ep = "192.168.2.151";
+	pDrv->init(444,ep,888);
 	pDrv->run(pDrv);
     return 0;
 }
