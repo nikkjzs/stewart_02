@@ -35,6 +35,7 @@ public:
 		if (listRecv.empty() == false)
 		{
 			CMsgIP msgip = listRecv.back();
+			listRecv.pop_back();
 			char* pBuf = msgip.buf;
 			if (pBuf[0] == 'a')
 			{

@@ -57,6 +57,7 @@ public:
 		if (listRecv.empty() == false)
 		{
 			CMsgIP msgip = listRecv.back();
+			listRecv.pop_back();
 			char* pBuf = msgip.buf;
 			if (pBuf[0] == 'a')
 			{
@@ -109,7 +110,7 @@ int main()
 	int upport = 888;
 	//pDrv->init(444,ep,888);
 	pDrv->init(444, upip,upport,
-		ep,888,1000);
+		ep,888,333);
 	pDrv->run(pDrv,4);
     return 0;
 }
