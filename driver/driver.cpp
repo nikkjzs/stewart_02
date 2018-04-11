@@ -109,7 +109,7 @@ int main()
 	int upport = 888;
 	//pDrv->init(444,ep,888);
 	pDrv->init(444, upip,upport,
-		ep,888,333);
+		ep,888,1000);
 	pDrv->run(pDrv,4);
     return 0;
 }

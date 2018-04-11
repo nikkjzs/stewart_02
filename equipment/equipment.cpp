@@ -13,6 +13,10 @@
 #include <boost/lockfree/stack.hpp>
 #include <boost/asio/strand.hpp>
 
+
+#include <boost/timer/timer.hpp>  
+
+
 #include "../base/base.h"
 
 using boost::asio::ip::udp;
@@ -39,6 +43,9 @@ public:
 
 			if (pBuf[0] == 'b')
 			{
+				//boost::timer::auto_cpu_timer
+				boost::timer::auto_cpu_timer
+					timer("%w clock time, %t totle program time(%p%)");
 				int i = 5;
 			}
 
