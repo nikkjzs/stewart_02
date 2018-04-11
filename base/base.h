@@ -36,7 +36,7 @@ public:
 		//tar_endpoint_ = udp::endpoint(boost::asio::ip::address_v4::from_string(targetIP), targetport);
 	}
 
-	virtual void init(int localport, string targetIP, int targetport)
+	void init(int localport, string targetIP, int targetport)
 	{
 		socket_.open(udp::v4());
 		socket_.bind(udp::endpoint(udp::v4(), localport));
