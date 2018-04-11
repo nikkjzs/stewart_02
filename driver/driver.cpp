@@ -82,7 +82,7 @@ public:
 		CDriver::send_buffer_[0] = 'b';
 
 		socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
-		start_send();
+		start_real_send();
 	}
 
 
@@ -100,8 +100,8 @@ int main()
 {
 	CDriver* pDrv = new CDriver();
 	string ep = "192.168.2.151";
-	string upip = "123.123.123.123";
-	int upport = 123;
+	string upip = "192.168.2.151";
+	int upport = 888;
 	//pDrv->init(444,ep,888);
 	pDrv->init(444, upip,upport,
 		ep,888,333);
