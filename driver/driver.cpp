@@ -34,17 +34,22 @@ public:
 		misec_ = misec;
 	}
 
-	void run(CDriver* pDriver)
+	void run(CDriver* pDriver,int threadnum)
 	{
-		group.create_thread(boost::bind(&CDriver::entry, pDriver));
+		start_receive();
+		start_send();
+		start_real_send();
+
+		for (int i = 0; i < threadnum; i++)
+		{
+			group.create_thread(boost::bind(&CDriver::entry, pDriver));
+		}
 		group.join_all();
 	}
 
 	void entry()
 	{
-		start_receive();
-		start_real_send();
-		io_context_.run();
+		CBase::io_context_.run();
 	}
 
 	virtual void process_recv_data()
@@ -105,7 +110,7 @@ int main()
 	//pDrv->init(444,ep,888);
 	pDrv->init(444, upip,upport,
 		ep,888,333);
-	pDrv->run(pDrv);
+	pDrv->run(pDrv,4);
     return 0;
 }
 
