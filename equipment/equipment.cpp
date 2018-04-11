@@ -36,6 +36,12 @@ public:
 			{
 				int i = 5;
 			}
+
+			if (pBuf[0] == 'b')
+			{
+				int i = 5;
+			}
+
 		}
 		//do nothing
 	}
