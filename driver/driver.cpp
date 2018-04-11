@@ -158,15 +158,15 @@ public:
 		//tmp
 		CDriver::send_buffer_[0] = 'b';
 
-		while (1)
-		{
-			//Sleep(1);
-			socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
+		//while (1)
+		//{
+		//	//Sleep(1);
+		//	socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
 
-			//test
+		//	//test
 
-			mytimer_.test();
-		}
+		//	mytimer_.test();
+		//}
 
 		socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
 
