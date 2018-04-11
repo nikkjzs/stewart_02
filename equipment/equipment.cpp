@@ -28,6 +28,15 @@ public:
 
 	virtual void process_recv_data()
 	{
+		if (listRecv.empty() == false)
+		{
+			CMsgIP msgip = listRecv.back();
+			char* pBuf = msgip.buf;
+			if (pBuf[0] == 'a')
+			{
+				int i = 5;
+			}
+		}
 		//do nothing
 	}
 };
