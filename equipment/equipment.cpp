@@ -45,7 +45,7 @@ public:
 			{
 				//boost::timer::auto_cpu_timer
 				boost::timer::auto_cpu_timer
-					timer("%w clock time, %t totle program time(%p%)");
+					timer("%w clock time, %t totle program time(%p%)\n");
 				int i = 5;
 			}
 
