@@ -19,68 +19,14 @@
 
 #include "../base/base.h"
 
-//class CMyTimer
-//{
-//public:
-//	bool IsTimeOut(boost::timer::nanosecond_type timeout)
-//	{
-//		if (isfirst_ == true)
-//		{
-//			isfirst_ = false;
-//			timer_.start();
-//			return false;
-//		}
-//
-//		boost::timer::cpu_times elap = timer_.elapsed();
-//		if (elap.wall / 1000000 > timeout)
-//		{
-//			timer_.start();
-//			printf("%d\n", elap.wall / 1000000);
-//			return true;
-//		}
-//		
-//		printf("%d false\n", elap.wall / 1000000);
-//		return false;
-//	}
-//
-//	bool test()
-//	{
-//		if (isfirst_ == true)
-//		{
-//			isfirst_ = false;
-//			timer_.start();
-//			return false;
-//		}
-//
-//		boost::timer::cpu_times elap = timer_.elapsed();
-//		//if (elap.wall / 1000000 > timeout)
-//		{
-//			//printf("%d\n", elap.wall / 1000000);
-//			if (elap.wall / 1000000 > 10)
-//			{
-//				int lllag = 6;
-//			}
-//
-//			timer_.start();
-//			return true;
-//		}
-//	}
-//
-//
-//	bool isfirst_ = true;
-//	boost::timer::cpu_timer timer_;
-//	//boost::timer::nanosecond_type duration;
-//};
-
 
 using boost::asio::ip::udp;
 
 class CMyTime
 {
 public:
-	CMyTime()//clock_t timeout)
+	CMyTime()
 	{
-		//timeout_ = timeout;
 	}
 
 	bool IsTimeout(clock_t timeout)
@@ -125,14 +71,12 @@ public:
 	}
 
 	bool isfirst_ = true;
-	//clock_t timeout_;
 	clock_t lst_;
 };
 
 class CDriver : public CBase
 {
 public:
-	//CDriver(int localport, string targetIP, int targetport) : CBase(localport, targetIP, targetport)
 	CDriver() : CBase(), timer_(CDriver::io_context_)
 	{
 
@@ -227,51 +171,6 @@ public:
 		}
 	}
 
-
-	//virtual void start_real_send()//realtime
-	//{
-	//	
-
-	//	//boost::asio::deadline_timer timer(io_context_, boost::posix_time::millisec(1000));
-	//	timer_.expires_from_now(boost::posix_time::millisec(misec_));
-	//	timer_.async_wait(boost::bind(&CDriver::handle_real_send, this));
-
-	//	/*socket_.async_send_to(boost::asio::buffer(send_buffer_), tar_endpoint_,
-	//		boost::asio::bind_executor(strand_, boost::bind(&CBase::handle_send, this))
-	//	);*/
-	//}
-
-	//virtual void handle_real_send()
-	//{
-	//	//tmp
-	//	CDriver::send_buffer_[0] = 'b';
-
-	//	while (1)
-	//	{
-	//		//Sleep(1);
-	//		socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
-
-	//		//test
-
-	//		mytimer_.test();
-	//	}
-
-	//	socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
-
-	//	//test
-
-	//	mytimer_.test();
-
-	//	/*if (mytimer_.IsTimeOut(400) == true)
-	//	{
-	//		int kk = 66;
-	//	}*/
-	//	
-
-	//	start_real_send();
-	//}
-
-
 	boost::asio::io_context io_context_;
 
 	udp::endpoint tar_endpoint_;
@@ -279,8 +178,6 @@ public:
 	char send_buffer_[BUF_SIZE];
 	char recv_buffer_[BUF_SIZE];
 	int misec_;
-
-
 
 	//test
 	CMyTime mytimer_;

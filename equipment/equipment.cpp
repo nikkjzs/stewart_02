@@ -25,9 +25,8 @@ using boost::asio::ip::udp;
 class CMyTime
 {
 public:
-	CMyTime()//clock_t timeout)
+	CMyTime()
 	{
-		//timeout_ = timeout;
 	}
 
 	bool IsTimeout(clock_t timeout)
@@ -72,14 +71,12 @@ public:
 	}
 
 	bool isfirst_ = true;
-	//clock_t timeout_;
 	clock_t lst_;
 };
 
 class CEquip : public CBase
 {
 public:
-	//CEquip(int localport, string targetIP, int targetport) : CBase(localport, targetIP, targetport)
 	CEquip() : CBase()
 	{
 
@@ -100,10 +97,6 @@ public:
 			if (pBuf[0] == 'g')
 			{
 				mytimer_.echofunc();
-				//boost::timer::auto_cpu_timer
-				/*boost::timer::auto_cpu_timer
-					timer("%w clock time, %t totle program time(%p%)\n");
-				int i = 5;*/
 			}
 
 		}
