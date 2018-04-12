@@ -19,58 +19,58 @@
 
 #include "../base/base.h"
 
-class CMyTimer
-{
-public:
-	bool IsTimeOut(boost::timer::nanosecond_type timeout)
-	{
-		if (isfirst_ == true)
-		{
-			isfirst_ = false;
-			timer_.start();
-			return false;
-		}
-
-		boost::timer::cpu_times elap = timer_.elapsed();
-		if (elap.wall / 1000000 > timeout)
-		{
-			timer_.start();
-			printf("%d\n", elap.wall / 1000000);
-			return true;
-		}
-		
-		printf("%d false\n", elap.wall / 1000000);
-		return false;
-	}
-
-	bool test()
-	{
-		if (isfirst_ == true)
-		{
-			isfirst_ = false;
-			timer_.start();
-			return false;
-		}
-
-		boost::timer::cpu_times elap = timer_.elapsed();
-		//if (elap.wall / 1000000 > timeout)
-		{
-			//printf("%d\n", elap.wall / 1000000);
-			if (elap.wall / 1000000 > 10)
-			{
-				int lllag = 6;
-			}
-
-			timer_.start();
-			return true;
-		}
-	}
-
-
-	bool isfirst_ = true;
-	boost::timer::cpu_timer timer_;
-	//boost::timer::nanosecond_type duration;
-};
+//class CMyTimer
+//{
+//public:
+//	bool IsTimeOut(boost::timer::nanosecond_type timeout)
+//	{
+//		if (isfirst_ == true)
+//		{
+//			isfirst_ = false;
+//			timer_.start();
+//			return false;
+//		}
+//
+//		boost::timer::cpu_times elap = timer_.elapsed();
+//		if (elap.wall / 1000000 > timeout)
+//		{
+//			timer_.start();
+//			printf("%d\n", elap.wall / 1000000);
+//			return true;
+//		}
+//		
+//		printf("%d false\n", elap.wall / 1000000);
+//		return false;
+//	}
+//
+//	bool test()
+//	{
+//		if (isfirst_ == true)
+//		{
+//			isfirst_ = false;
+//			timer_.start();
+//			return false;
+//		}
+//
+//		boost::timer::cpu_times elap = timer_.elapsed();
+//		//if (elap.wall / 1000000 > timeout)
+//		{
+//			//printf("%d\n", elap.wall / 1000000);
+//			if (elap.wall / 1000000 > 10)
+//			{
+//				int lllag = 6;
+//			}
+//
+//			timer_.start();
+//			return true;
+//		}
+//	}
+//
+//
+//	bool isfirst_ = true;
+//	boost::timer::cpu_timer timer_;
+//	//boost::timer::nanosecond_type duration;
+//};
 
 
 using boost::asio::ip::udp;
@@ -230,7 +230,7 @@ public:
 
 
 	//test
-	CMyTimer mytimer_;
+	//CMyTimer mytimer_;
 };
 
 using namespace std;
