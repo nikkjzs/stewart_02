@@ -42,7 +42,7 @@ public:
 				int i = 5;
 			}
 
-			if (pBuf[0] == 'b')
+			if (pBuf[0] == 'g')
 			{
 				//boost::timer::auto_cpu_timer
 				boost::timer::auto_cpu_timer

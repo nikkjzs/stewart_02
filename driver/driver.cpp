@@ -15,6 +15,8 @@
 
 #include <boost/timer/timer.hpp>  
 
+#include <time.h>
+
 #include "../base/base.h"
 
 class CMyTimer
@@ -101,27 +103,28 @@ public:
 			group.create_thread(boost::bind(&CDriver::entry, pDriver));
 		}
 
-		run_real(pDriver);
+		//run_real(pDriver);
+		group.create_thread(boost::bind(&CDriver::start_real_send, pDriver));
 
 		group.join_all();
 	}
 
-	void run_real(CDriver* pDriver)
-	{
-		start_real_send();
+	//void run_real(CDriver* pDriver)
+	//{
+	//	start_real_send();
 
-		group.create_thread(boost::bind(&CDriver::entry_realsend, pDriver));
-	}
+	//	group.create_thread(boost::bind(&CDriver::entry_realsend, pDriver));
+	//}
 
 	void entry()
 	{
 		CBase::io_context_.run();
 	}
 
-	void entry_realsend()
-	{
-		CDriver::io_context_.run();
-	}
+	//void entry_realsend()
+	//{
+	//	CDriver::io_context_.run();
+	//}
 
 	virtual void process_recv_data()
 	{
@@ -139,49 +142,81 @@ public:
 	}
 
 
-
-	virtual void start_real_send()//realtime
+	virtual void start_real_send()
 	{
-		
+		bool isfirst = true;
+		clock_t cur,lst;
 
-		//boost::asio::deadline_timer timer(io_context_, boost::posix_time::millisec(1000));
-		timer_.expires_from_now(boost::posix_time::millisec(misec_));
-		timer_.async_wait(boost::bind(&CDriver::handle_real_send, this));
+		CDriver::send_buffer_[0] = 'g';
 
-		/*socket_.async_send_to(boost::asio::buffer(send_buffer_), tar_endpoint_,
-			boost::asio::bind_executor(strand_, boost::bind(&CBase::handle_send, this))
-		);*/
-	}
-
-	virtual void handle_real_send()
-	{
-		//tmp
-		CDriver::send_buffer_[0] = 'b';
-
-		while (1)
+		while (true)
 		{
-			//Sleep(1);
+			if (isfirst == true)
+			{
+				lst = clock();
+				isfirst = false;
+			}
+			else
+			{
+				cur = clock();
+				clock_t dur = cur - lst;
+				if (dur >= misec_)
+				{
+					lst = cur;
+				}
+				else
+				{
+					continue;
+				}
+			}
+
 			socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
-
-			//test
-
-			mytimer_.test();
 		}
-
-		socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
-
-		//test
-
-		mytimer_.test();
-
-		/*if (mytimer_.IsTimeOut(400) == true)
-		{
-			int kk = 66;
-		}*/
-		
-
-		start_real_send();
 	}
+
+
+	//virtual void start_real_send()//realtime
+	//{
+	//	
+
+	//	//boost::asio::deadline_timer timer(io_context_, boost::posix_time::millisec(1000));
+	//	timer_.expires_from_now(boost::posix_time::millisec(misec_));
+	//	timer_.async_wait(boost::bind(&CDriver::handle_real_send, this));
+
+	//	/*socket_.async_send_to(boost::asio::buffer(send_buffer_), tar_endpoint_,
+	//		boost::asio::bind_executor(strand_, boost::bind(&CBase::handle_send, this))
+	//	);*/
+	//}
+
+	//virtual void handle_real_send()
+	//{
+	//	//tmp
+	//	CDriver::send_buffer_[0] = 'b';
+
+	//	while (1)
+	//	{
+	//		//Sleep(1);
+	//		socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
+
+	//		//test
+
+	//		mytimer_.test();
+	//	}
+
+	//	socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
+
+	//	//test
+
+	//	mytimer_.test();
+
+	//	/*if (mytimer_.IsTimeOut(400) == true)
+	//	{
+	//		int kk = 66;
+	//	}*/
+	//	
+
+	//	start_real_send();
+	//}
 
 
 	boost::asio::io_context io_context_;
