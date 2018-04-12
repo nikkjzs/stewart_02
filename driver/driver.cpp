@@ -96,14 +96,12 @@ public:
 	{
 		start_receive();
 		start_send();
-		//start_real_send();
 
 		for (int i = 0; i < threadnum; i++)
 		{
 			group.create_thread(boost::bind(&CDriver::entry, pDriver));
 		}
 
-		//run_real(pDriver);
 		group.create_thread(boost::bind(&CDriver::start_real_send, pDriver));
 
 		group.join_all();

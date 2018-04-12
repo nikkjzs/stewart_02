@@ -43,16 +43,20 @@ public:
 		tar_endpoint_ = udp::endpoint(boost::asio::ip::address_v4::from_string(targetIP), targetport);
 	}
 
-	void run(CBase* pBase)
+	void run(CBase* pBase,int threadnum)
 	{
-		group.create_thread(boost::bind(&CBase::entry, pBase));
+		start_receive();
+		start_send();
+
+		for (int i = 0; i < threadnum; i++)
+		{
+			group.create_thread(boost::bind(&CBase::entry, pBase));
+		}
 		group.join_all();
 	}
 
 	void entry()
 	{
-		start_receive();
-		start_send();
 		io_context_.run();
 	}
 
