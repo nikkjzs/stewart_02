@@ -143,15 +143,18 @@ public:
 		memcpy(lMsgIP.buf, recv_buffer_, BUF_SIZE);
 
 		//sync cache received data
-		listRecv.push_back(lMsgIP);
+		//listRecv.push_back(lMsgIP);
 
 		//pump a unprocessed message
-		strand_.post(boost::bind(&CBase::process_recv_data,this));
+		//strand_.post(boost::bind(&CBase::process_recv_data,this));
 
 		if (!error || error == boost::asio::error::message_size)
 		{
-			//start_receive();
+			start_receive();
 		}
+
+
+		process_recv_data(lMsgIP);
 	}
 
 	void start_send()
@@ -170,7 +173,9 @@ public:
 		start_send();
 	}
 
-	virtual void process_recv_data() = 0;
+	//virtual void process_recv_data(CMsgIP lMsgIP) = 0;
+	virtual void process_recv_data(CMsgIP lMsgIP)
+	{}
 
 	boost::asio::io_context io_context_;
 	boost::asio::io_context::strand strand_;
@@ -181,5 +186,5 @@ public:
 	char send_buffer_[BUF_SIZE];
 	char recv_buffer_[BUF_SIZE];
 
-	boost::container::list<CMsgIP> listRecv;
+	//boost::container::list<CMsgIP> listRecv;
 };

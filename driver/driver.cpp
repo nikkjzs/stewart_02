@@ -122,18 +122,20 @@ public:
 	//	CDriver::io_context_.run();
 	//}
 
-	virtual void process_recv_data()
+	virtual void process_recv_data(CMsgIP msgip)
 	{
-		if (listRecv.empty() == false)
-		{
-			CMsgIP msgip = listRecv.back();
-			listRecv.pop_back();
+		//if (listRecv.empty() == false)
+		//{
+		//	CMsgIP msgip = listRecv.back();
+		//	listRecv.pop_back();
 
-			//immediatly pump recv cmd
-			CBase::start_receive();
+		//	//immediatly pump recv cmd
+		//	CBase::start_receive();//any timing, there is only one recv_cmd in the event queue.
 
-			workflow_branch(msgip);
-		}
+		//	workflow_branch(msgip);
+		//}
+
+		workflow_branch(msgip);
 	}
 
 	void workflow_branch(CMsgIP msgip)

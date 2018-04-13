@@ -84,22 +84,22 @@ public:
 
 	virtual void process_recv_data()
 	{
-		if (listRecv.empty() == false)
-		{
-			CMsgIP msgip = listRecv.back();
-			listRecv.pop_back();
-			char* pBuf = msgip.buf;
-			if (pBuf[0] == 'a')
-			{
-				int i = 5;
-			}
+		//if (listRecv.empty() == false)
+		//{
+		//	CMsgIP msgip = listRecv.back();
+		//	listRecv.pop_back();
+		//	char* pBuf = msgip.buf;
+		//	if (pBuf[0] == 'a')
+		//	{
+		//		int i = 5;
+		//	}
 
-			if (pBuf[0] == 'g')
-			{
-				mytimer_.echofunc();
-			}
+		//	if (pBuf[0] == 'g')
+		//	{
+		//		mytimer_.echofunc();
+		//	}
 
-		}
+		//}
 		//do nothing
 	}
 
