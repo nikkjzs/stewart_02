@@ -150,7 +150,7 @@ public:
 
 		if (!error || error == boost::asio::error::message_size)
 		{
-			start_receive();
+			//start_receive();
 		}
 	}
 

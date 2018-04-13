@@ -128,12 +128,32 @@ public:
 		{
 			CMsgIP msgip = listRecv.back();
 			listRecv.pop_back();
-			char* pBuf = msgip.buf;
+
+			//immediatly pump recv cmd
+			CBase::start_receive();
+
+			workflow_branch(msgip);
+		}
+	}
+
+	void workflow_branch(CMsgIP msgip)
+	{
+		char* pBuf = msgip.buf;
+		udp::endpoint endpoint = msgip.endpoint;
+		string eq = "192.168.2.151";
+		if (endpoint.address().to_string() == eq)
+		{
+			procedure_equ2drv();
+
 			if (pBuf[0] == 'a')
 			{
 				int i = 5;
 			}
 		}
+	}
+
+	void procedure_equ2drv()
+	{
 
 	}
 
