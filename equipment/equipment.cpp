@@ -160,7 +160,7 @@ public:
 				break;
 		}
 
-		printf("%d", outStat);
+		printf("%d\n", outStat);
 
 		eq2dr_.rComd = outStat;
 
