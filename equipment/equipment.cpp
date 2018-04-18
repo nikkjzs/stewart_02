@@ -188,7 +188,7 @@ public:
 	//S_CMD recv_cmd_ = sComd99;
 	//EQU_STATUS equ_status_ = status0;
 	DrvToEqu dr2eq_ = { 0, sComd99, { 0 },{ 0 },{ 0 },{ 0 } };
-	EquToDrv eq2dr_ = { 0, status99,{ 0 },{ 0 },{ 0 },{ 0 } };
+	EquToDrv eq2dr_ = { 0, status0,{ 0 },{ 0 },{ 0 },{ 0 } };
 	CMyTime mytimer_;
 };
 
