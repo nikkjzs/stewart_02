@@ -45,7 +45,7 @@ public:
 		CustomHead ch = { 0 };//
 		DrvToUpper data = *(DrvToUpper*)(buf + sizeof(CustomHead));
 
-		EQU_STATUS stat = (EQU_STATUS)data.rComd;
+		EQU_STATUS stat = (EQU_STATUS)data.upper_cmd;
 
 		//send_cmd_ = sComd99;
 
@@ -104,7 +104,8 @@ public:
 	//S_CMD send_cmd_ = sComd99;
 	//EQU_STATUS equ_status_ = status99;
 	UpperToDrv up2dr_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, 0, 0};
-	DrvToUpper dr2up_ = { 0, status99, { 0 },{ 0 },{ 0 },{ 0 } };
+	DrvToUpper dr2up_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, status99, 0 };
+	//DrvToUpper dr2up_ = { 0, status99, { 0 },{ 0 },{ 0 },{ 0 } };
 };
 
 

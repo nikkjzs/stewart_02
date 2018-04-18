@@ -34,7 +34,7 @@ typedef struct
 	int upper_cmd;
 	int equ_stat;
 	bool reset;
-}UpperToDrv;
+}UpperToDrv, DrvToUpper;
 
 
 
@@ -57,7 +57,7 @@ typedef struct
 	float rAtti[6];
 	float rRese[6];
 	float rMoto[6];
-}EquToDrv,DrvToUpper;
+}EquToDrv;// , DrvToUpper;
 
 
 typedef struct

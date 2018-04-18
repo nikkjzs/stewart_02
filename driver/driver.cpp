@@ -190,7 +190,7 @@ public:
 
 	void send_process_drv2up(CMsgIP msgip)
 	{
-		dr2up_.rComd = eq2dr_.rComd;
+		dr2up_.equ_stat = eq2dr_.rComd;
 
 		CustomHead customhead = { 0 };//
 		memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
@@ -257,7 +257,8 @@ public:
 	//S_CMD send_cmd_ = sComd99;
 	//EQU_STATUS equ_status_ = status99;
 	UpperToDrv up2dr_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, 0, 0 };
-	DrvToUpper dr2up_ = { 0, status99,{ 0 },{ 0 },{ 0 },{ 0 } };
+	//DrvToUpper dr2up_ = { 0, status99,{ 0 },{ 0 },{ 0 },{ 0 } };
+	DrvToUpper dr2up_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, status99, 0 };
 	DrvToEqu dr2eq_ = { 0, sComd99,{ 0 },{ 0 },{ 0 },{ 0 } };
 	EquToDrv eq2dr_ = { 0, status99,{ 0 },{ 0 },{ 0 },{ 0 } };
 };
