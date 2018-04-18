@@ -212,8 +212,8 @@ public:
 			dr2eq_.sComd = up2dr_.upper_cmd;
 			//dr2eq_.sComd = sComd6;
 
-			memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
-			char* p = CBase::send_buffer_ + sizeof(customhead);
+			memcpy(CDriver::send_buffer_, &customhead, sizeof(customhead));
+			char* p = CDriver::send_buffer_ + sizeof(customhead);
 			memcpy(p, &dr2eq_, sizeof(dr2eq_));
 
 
