@@ -41,7 +41,7 @@ public:
 		return ret;
 	}
 
-	std::string str;
+	std::string str = "0";
 	boost::thread_group group;
 };
 
