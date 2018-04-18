@@ -182,7 +182,7 @@ public:
 
 		memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
 		char* p = CBase::send_buffer_ + sizeof(customhead);
-		memcpy(p,&eq2dr,sizeof(eq2dr));
+		memcpy(p,&eq2dr,sizeof(eq2dr)); 
 	}
 
 	//S_CMD recv_cmd_ = sComd99;
