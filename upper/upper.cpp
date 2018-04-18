@@ -27,7 +27,7 @@ public:
 	virtual void process_recv_data(CMsgIP msgip)
 	{
 		udp::endpoint endpoint = msgip.endpoint;
-		string drv = "192.168.2.151";
+		string drv = "125.125.122.83";
 		if (endpoint.address().to_string() == drv)
 		{
 			recv_process_drv2upper(msgip);

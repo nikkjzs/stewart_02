@@ -142,7 +142,7 @@ public:
 	{
 		//char* pBuf = msgip.buf;
 		udp::endpoint endpoint = msgip.endpoint;
-		string eq = "192.168.2.151";
+		string eq = "111.111.111.111";
 		string up = "192.168.2.151";
 		if (endpoint.address().to_string() == eq)
 		{
