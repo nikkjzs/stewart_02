@@ -33,7 +33,6 @@ public:
 	void run(CInput* pIn)
 	{
 		group.create_thread(boost::bind(&CInput::loopgetinput, pIn));
-		group.join_all();
 	}
 
 	int getcmd()
