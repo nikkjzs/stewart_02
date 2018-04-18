@@ -10,7 +10,42 @@
 #include <boost/lockfree/stack.hpp>
 #include <boost/asio/strand.hpp>
 
+#include <string>
+#include <iostream>
+
 #include "../base/base.h"
+
+
+using namespace std;
+
+class CInput
+{
+public:
+	void loopgetinput()
+	{
+		while (true)
+		{
+			std::cout << "Please input cmd:" << std::endl;
+			std::cin >> str;
+		}
+	}
+
+	void run(CInput* pIn)
+	{
+		group.create_thread(boost::bind(&CInput::loopgetinput, pIn));
+		group.join_all();
+	}
+
+	int getcmd()
+	{
+		int ret = std::stoi(str);
+		return ret;
+	}
+
+	std::string str;
+	boost::thread_group group;
+};
+
 
 using boost::asio::ip::udp;
 
@@ -19,9 +54,9 @@ class CUpper : public CBase
 public:
 	CUpper() : CBase()
 	{
-
+		pInput_ = new CInput();
+		pInput_->run(pInput_);
 	}
-
 	
 
 	virtual void process_recv_data(CMsgIP msgip)
@@ -46,6 +81,7 @@ public:
 		DrvToUpper data = *(DrvToUpper*)(buf + sizeof(CustomHead));
 
 		EQU_STATUS stat = (EQU_STATUS)data.equ_stat;
+
 
 		//send_cmd_ = sComd99;
 
@@ -77,6 +113,9 @@ public:
 			printf("unknown cmd\n");
 		}
 
+		//test
+		up2dr_.upper_cmd = pInput_->getcmd();
+
 		send_process_upper2drv();
 
 		start_send();
@@ -106,6 +145,8 @@ public:
 	UpperToDrv up2dr_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, 0, 0};
 	DrvToUpper dr2up_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, status99, 0 };
 	//DrvToUpper dr2up_ = { 0, status99, { 0 },{ 0 },{ 0 },{ 0 } };
+
+	CInput*	pInput_;
 };
 
 
