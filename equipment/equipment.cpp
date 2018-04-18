@@ -160,6 +160,8 @@ public:
 				break;
 		}
 
+		printf("%d", outStat);
+
 		eq2dr_.rComd = outStat;
 
 		send_process_equ2drv();
