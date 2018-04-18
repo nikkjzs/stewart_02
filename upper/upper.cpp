@@ -110,6 +110,10 @@ public:
 
 int main()
 {
+	CBase* pUp = new CUpper();
+	string dr = "125.125.122.83";
+	pUp->init(888, dr, 444);
+	pUp->run(pUp, 4);
     return 0;
 }
 
