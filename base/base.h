@@ -34,7 +34,7 @@ typedef struct
 	int upper_cmd;
 	int equ_stat;
 	bool reset;
-}DATA_TO_DRIVER, *PDATA_TO_DRIVER;
+}UpperToDrv;
 
 
 
@@ -46,7 +46,7 @@ typedef struct
 	float sAtti[6]; //六个姿态（α，β，γ，X，Y，Z） 
 	float sVelo[6]; //（默认值为0） 
 	float sAcce[3]; //加速度（默认值为0） 
-}DataToVice;
+}DrvToEqu;
 
 
 typedef struct
@@ -57,7 +57,13 @@ typedef struct
 	float rAtti[6];
 	float rRese[6];
 	float rMoto[6];
-}DataToMain;
+}EquToDrv,DrvToUpper;
+
+
+typedef struct
+{
+	int timestamp;
+}CustomHead;
 
 
 enum EQU_STATUS
@@ -75,12 +81,12 @@ enum EQU_STATUS
 
 enum S_CMD
 {
-	sComd0 = 0,
-	sComd2 = 2,
-	sComd4 = 4,
-	sComd6 = 6,
-	sComd7 = 7,
-	sComd8 = 8,
+	sComd0 = 0,			//正常发送运动参数
+	sComd2 = 2,			//控制平台回到中立位
+	sComd4 = 4,			//握手协议：平台切换到工作态
+	sComd6 = 6,			//开机命令：平台由底位上升到中立位
+	sComd7 = 7,			//关机命令：平台由中立位回到底位
+	sComd8 = 8,			//保留
 	sComd99 = 99,
 };
 

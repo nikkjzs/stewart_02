@@ -140,23 +140,62 @@ public:
 
 	void workflow_branch(CMsgIP msgip)
 	{
-		char* pBuf = msgip.buf;
+		//char* pBuf = msgip.buf;
 		udp::endpoint endpoint = msgip.endpoint;
 		string eq = "192.168.2.151";
+		string up = "192.168.2.151";
 		if (endpoint.address().to_string() == eq)
 		{
-			procedure_equ2drv();
+			recv_process_equ2drv(msgip);
 
-			if (pBuf[0] == 'a')
-			{
-				int i = 5;
-			}
+			//if (pBuf[0] == 'a')
+			//{
+			//	int i = 5;
+			//}
+		}
+		else if (endpoint.address().to_string() == up)
+		{
+			recv_process_up2drv(msgip);
 		}
 	}
 
-	void procedure_equ2drv()
+	void recv_process_equ2drv(CMsgIP msgip)
 	{
+		char* buf = msgip.buf;
+		CustomHead ch = { 0 };//
+		EquToDrv data = *(EquToDrv*)(buf + sizeof(CustomHead));
 
+		eq2dr_ = data;
+
+		send_process_drv2up(msgip);
+
+	}
+
+	//obsolete
+	void send_process_drv2equ(CMsgIP msgip)
+	{
+	}
+
+	void recv_process_up2drv(CMsgIP msgip)
+	{
+		char* buf = msgip.buf;
+		CustomHead ch = { 0 };//
+		UpperToDrv data = *(UpperToDrv*)(buf + sizeof(CustomHead));
+
+		up2dr_ = data;
+
+		//send_process_drv2up(data);
+
+	}
+
+	void send_process_drv2up(CMsgIP msgip)
+	{
+		dr2up_.rComd = eq2dr_.rComd;
+
+		CustomHead customhead = { 0 };//
+		memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
+		char* p = CBase::send_buffer_ + sizeof(customhead);
+		memcpy(p, &dr2up_, sizeof(dr2up_));
 	}
 
 
@@ -165,10 +204,17 @@ public:
 		bool isfirst = true;
 		clock_t cur,lst;
 
-		CDriver::send_buffer_[0] = 'g';
+		//CDriver::send_buffer_[0] = 'g';
 
 		while (true)
 		{
+			CustomHead customhead = { 0 };//
+			dr2eq_.sComd = up2dr_.upper_cmd;
+			memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
+			char* p = CBase::send_buffer_ + sizeof(customhead);
+			memcpy(p, &dr2eq_, sizeof(dr2eq_));
+
+
 			if (isfirst == true)
 			{
 				lst = clock();
@@ -188,6 +234,8 @@ public:
 				}
 			}
 
+
+
 			socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
 			mytimer_.echofunc();
 		}
@@ -203,6 +251,13 @@ public:
 
 	//test
 	CMyTime mytimer_;
+
+	//S_CMD send_cmd_ = sComd99;
+	//EQU_STATUS equ_status_ = status99;
+	UpperToDrv up2dr_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, 0, 0 };
+	DrvToUpper dr2up_ = { 0, status99,{ 0 },{ 0 },{ 0 },{ 0 } };
+	DrvToEqu dr2eq_ = { 0, sComd99,{ 0 },{ 0 },{ 0 },{ 0 } };
+	EquToDrv eq2dr_ = { 0, status99,{ 0 },{ 0 },{ 0 },{ 0 } };
 };
 
 using namespace std;
