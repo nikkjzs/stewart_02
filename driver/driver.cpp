@@ -15,9 +15,35 @@
 
 #include <boost/timer/timer.hpp>  
 
+
 #include <time.h>
+#include <string>
+#include <iostream>
 
 #include "../base/base.h"
+
+using namespace std;
+
+class CInput
+{
+public:
+	void loopgetinput()
+	{
+		while (true)
+		{
+			std::cin >> str;
+		}
+	}
+
+	void run(CInput* pIn)
+	{
+		group.create_thread(boost::bind(&CInput::loopgetinput, pIn));
+		group.join_all();
+	}
+
+	std::string str;
+	boost::thread_group group;
+};
 
 
 using boost::asio::ip::udp;
@@ -267,6 +293,9 @@ using namespace std;
 
 int main()
 {
+	CInput* in = new CInput();
+	in->run(in);
+
 	CDriver* pDrv = new CDriver();
 	//string ep = "192.168.2.151";
 	string ep = "192.168.2.151";
