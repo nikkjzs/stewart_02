@@ -199,7 +199,7 @@ int main()
 	CBase* pEqu = new CEquip();
 	string dr = "125.125.122.83";
 	pEqu->init(888,dr,444);
-	pEqu->run(pEqu,4);
+	pEqu->run(pEqu,1);
     return 0;
 }
 

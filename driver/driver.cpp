@@ -142,8 +142,8 @@ public:
 	{
 		//char* pBuf = msgip.buf;
 		udp::endpoint endpoint = msgip.endpoint;
-		string eq = "111.111.111.111";
-		string up = "192.168.2.151";
+		string eq = "192.168.2.151";
+		string up = "192.168.2.37";
 		if (endpoint.address().to_string() == eq)
 		{
 			recv_process_equ2drv(msgip);
@@ -268,13 +268,14 @@ using namespace std;
 int main()
 {
 	CDriver* pDrv = new CDriver();
+	//string ep = "192.168.2.151";
 	string ep = "192.168.2.151";
-	string upip = "192.168.2.151";
-	int upport = 888;
+	string upip = "192.168.2.37";
+	int upport = 222;
 	//pDrv->init(444,ep,888);
 	pDrv->init(444, upip,upport,
 		ep,888,5);
-	pDrv->run(pDrv,5);
+	pDrv->run(pDrv,1);
     return 0;
 }
 
