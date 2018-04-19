@@ -184,12 +184,15 @@ public:
 
 	void handle_send()
 	{
-
+		process_send_data();
 		start_send();
 	}
 
 	//virtual void process_recv_data(CMsgIP lMsgIP) = 0;
 	virtual void process_recv_data(CMsgIP lMsgIP)
+	{}
+
+	virtual void process_send_data()
 	{}
 
 	boost::asio::io_context io_context_;

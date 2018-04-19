@@ -113,11 +113,11 @@ public:
 		}
 
 		//test
-		up2dr_.upper_cmd = pInput_->getcmd();
+		//up2dr_.upper_cmd = pInput_->getcmd();
 
-		send_process_upper2drv();
+		//send_process_upper2drv();
 
-		start_send();
+		//start_send();
 	}
 
 	void send_process_upper2drv()
@@ -138,6 +138,14 @@ public:
 			memcpy(p, &up2dr, sizeof(up2dr));
 		}
 		//CBase::send_buffer_
+	}
+
+
+	virtual void process_send_data()
+	{
+		up2dr_.upper_cmd = pInput_->getcmd();
+
+		send_process_upper2drv();
 	}
 
 	//S_CMD send_cmd_ = sComd99;
