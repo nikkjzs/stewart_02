@@ -158,7 +158,7 @@ public:
 		}
 		else if (ch.type == TYPE_UPCTRL)
 		{
-			clientmutex.lock();
+			//clientmutex.lock();
 
 			bool bExist = false;
 			for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
@@ -175,7 +175,7 @@ public:
 				vUpCtrlEndpoint_.push_back(msgip.endpoint);
 			}
 
-			clientmutex.unlock();
+			//clientmutex.unlock();
 		}
 		
 		//pump
@@ -196,7 +196,7 @@ public:
 			}
 			else
 			{
-				clientmutex.lock();
+				//clientmutex.lock();
 
 				for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
 				{
@@ -205,7 +205,7 @@ public:
 						recv_process_up2drv(msgip);
 					}
 				}
-				clientmutex.unlock();
+				//clientmutex.unlock();
 			}
 		}
 
