@@ -149,6 +149,7 @@ public:
 
 		string eq = "192.168.2.151";
 		//string up = "192.168.2.37";
+		string echostr = msgip.endpoint.address().to_string();
 		if (ch.type == TYPE_UPGAME)
 		{
 			GameEndpoint_ = msgip.endpoint;
