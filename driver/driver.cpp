@@ -155,7 +155,20 @@ public:
 		}
 		else if (ch.type == TYPE_UPCTRL)
 		{
-			vUpCtrlEndpoint_.push_back(msgip.endpoint);
+			bool bExist = false;
+			for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
+			{
+				if (vUpCtrlEndpoint_[idx].address().to_string() == msgip.endpoint.address().to_string())
+				{
+					bExist = true;
+					break;
+				}
+			}
+
+			if (bExist == false)
+			{
+				vUpCtrlEndpoint_.push_back(msgip.endpoint);
+			}
 		}
 		
 
