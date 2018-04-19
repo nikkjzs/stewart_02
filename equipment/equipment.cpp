@@ -185,6 +185,12 @@ public:
 		memcpy(p,&eq2dr,sizeof(eq2dr)); 
 	}
 
+
+	virtual void process_send_data()
+	{
+		send_process_equ2drv();
+	}
+
 	//S_CMD recv_cmd_ = sComd99;
 	//EQU_STATUS equ_status_ = status0;
 	DrvToEqu dr2eq_ = { 0, sComd99, { 0 },{ 0 },{ 0 },{ 0 } };
