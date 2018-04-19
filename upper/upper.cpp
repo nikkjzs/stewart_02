@@ -18,6 +18,8 @@
 
 using namespace std;
 
+boost::mutex upmutex;
+
 class CInput
 {
 public:
@@ -83,7 +85,7 @@ public:
 
 
 		//send_cmd_ = sComd99;
-
+		upmutex.lock();
 		switch (stat)
 		{
 		case status0://平台停止，等待开机
@@ -111,7 +113,7 @@ public:
 		default:
 			printf("unknown cmd\n");
 		}
-
+		upmutex.unlock();
 		//test
 		//up2dr_.upper_cmd = pInput_->getcmd();
 
@@ -129,7 +131,9 @@ public:
 		UpperToDrv up2dr = { 0 };
 
 		customhead.type = TYPE_UPGAME;
+		upmutex.lock();
 		up2dr = up2dr_;
+		upmutex.unlock();
 
 		//if (equ_status_ != 3)
 		{
@@ -143,7 +147,9 @@ public:
 
 	virtual void process_send_data()
 	{
+		upmutex.lock();
 		up2dr_.upper_cmd = pInput_->getcmd();
+		upmutex.unlock();
 
 		send_process_upper2drv();
 	}
