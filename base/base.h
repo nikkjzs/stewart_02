@@ -62,6 +62,7 @@ typedef struct
 
 typedef struct
 {
+	int type;//1 equ	2 up game	3 up control	4 drv
 	int timestamp;
 }CustomHead;
 

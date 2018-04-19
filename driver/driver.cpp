@@ -163,6 +163,7 @@ public:
 		}
 	}
 
+	//drv从设备收
 	void recv_process_equ2drv(CMsgIP msgip)
 	{
 		char* buf = msgip.buf;
@@ -180,6 +181,7 @@ public:
 	{
 	}
 
+	//drv从上位收
 	void recv_process_up2drv(CMsgIP msgip)
 	{
 		char* buf = msgip.buf;
@@ -192,6 +194,7 @@ public:
 
 	}
 
+	//drv朝上位发
 	void send_process_drv2up(CMsgIP msgip)
 	{
 		dr2up_.equ_stat = eq2dr_.rComd;
@@ -202,7 +205,7 @@ public:
 		memcpy(p, &dr2up_, sizeof(dr2up_));
 	}
 
-
+	//drv实时朝设备发
 	virtual void start_real_send()
 	{
 		bool isfirst = true;
