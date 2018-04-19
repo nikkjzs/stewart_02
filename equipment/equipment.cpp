@@ -166,7 +166,7 @@ public:
 
 		send_process_equ2drv();
 
-		//start_send();
+		start_send();
 	}
 
 	void send_process_equ2drv()
