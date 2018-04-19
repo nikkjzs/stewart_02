@@ -26,6 +26,8 @@
 
 using boost::asio::ip::udp;
 
+boost::mutex clientmutex;
+
 class CMyTime
 {
 public:
@@ -156,6 +158,8 @@ public:
 		}
 		else if (ch.type == TYPE_UPCTRL)
 		{
+			clientmutex.lock();
+
 			bool bExist = false;
 			for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
 			{
@@ -170,8 +174,12 @@ public:
 			{
 				vUpCtrlEndpoint_.push_back(msgip.endpoint);
 			}
+
+			clientmutex.unlock();
 		}
 		
+		//pump
+		//CBase::start_receive();
 
 		udp::endpoint endpoint = msgip.endpoint;
 
@@ -188,6 +196,8 @@ public:
 			}
 			else
 			{
+				clientmutex.lock();
+
 				for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
 				{
 					if (endpoint.address().to_string() == vUpCtrlEndpoint_[idx].address().to_string())
@@ -195,6 +205,7 @@ public:
 						recv_process_up2drv(msgip);
 					}
 				}
+				clientmutex.unlock();
 			}
 		}
 
