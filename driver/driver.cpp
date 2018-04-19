@@ -97,7 +97,7 @@ public:
 	void run(CDriver* pDriver,int threadnum)
 	{
 		start_receive();
-		start_send();
+		//start_send();//must be connect 
 
 		for (int i = 0; i < threadnum; i++)
 		{

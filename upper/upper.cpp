@@ -117,7 +117,7 @@ public:
 
 		send_process_upper2drv();
 
-		start_send();
+		//start_send();
 	}
 
 	void send_process_upper2drv()
