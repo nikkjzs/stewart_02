@@ -144,30 +144,57 @@ public:
 
 	void workflow_branch(CMsgIP msgip)
 	{
-		//char* pBuf = msgip.buf;
-		udp::endpoint endpoint = msgip.endpoint;
+		char* pBuf = msgip.buf;
+		CustomHead ch = *(CustomHead*)pBuf;
+
 		string eq = "192.168.2.151";
-		string up = "192.168.2.37";
+		//string up = "192.168.2.37";
+		if (ch.type == TYPE_UPGAME)
+		{
+			GameEndpoint_ = msgip.endpoint;
+		}
+		else if (ch.type == TYPE_UPCTRL)
+		{
+			vUpCtrlEndpoint_.push_back(msgip.endpoint);
+		}
+		
+
+		udp::endpoint endpoint = msgip.endpoint;
+
+		
 		if (endpoint.address().to_string() == eq)
 		{
 			recv_process_equ2drv(msgip);
-
-			//if (pBuf[0] == 'a')
-			//{
-			//	int i = 5;
-			//}
 		}
-		else if (endpoint.address().to_string() == up)
+		else
+		{
+			if (endpoint.address().to_string() == GameEndpoint_.address().to_string())
+			{
+				recv_process_up2drv(msgip);
+			}
+			else
+			{
+				for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
+				{
+					if (endpoint.address().to_string() == vUpCtrlEndpoint_[idx].address().to_string())
+					{
+						recv_process_up2drv(msgip);
+					}
+				}
+			}
+		}
+
+		/*else if (endpoint.address().to_string() == up)
 		{
 			recv_process_up2drv(msgip);
-		}
+		}*/
 	}
 
 	//drv从设备收
 	void recv_process_equ2drv(CMsgIP msgip)
 	{
 		char* buf = msgip.buf;
-		CustomHead ch = { 0 };//
+		CustomHead ch = { TYPE_UNDEFINED, 0 };//
 		EquToDrv data = *(EquToDrv*)(buf + sizeof(CustomHead));
 
 		eq2dr_ = data;
@@ -185,7 +212,7 @@ public:
 	void recv_process_up2drv(CMsgIP msgip)
 	{
 		char* buf = msgip.buf;
-		CustomHead ch = { 0 };//
+		CustomHead ch = { TYPE_UNDEFINED, 0 };//
 		UpperToDrv data = *(UpperToDrv*)(buf + sizeof(CustomHead));
 
 		up2dr_ = data;
@@ -199,7 +226,7 @@ public:
 	{
 		dr2up_.equ_stat = eq2dr_.rComd;
 
-		CustomHead customhead = { 0 };//
+		CustomHead customhead = { TYPE_DRV, 0 };//
 		memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
 		char* p = CBase::send_buffer_ + sizeof(customhead);
 		memcpy(p, &dr2up_, sizeof(dr2up_));
@@ -214,7 +241,7 @@ public:
 
 		while (true)
 		{
-			CustomHead customhead = { 0 };//
+			CustomHead customhead = { TYPE_UNDEFINED, 0 };//
 			dr2eq_.sComd = up2dr_.upper_cmd;
 			//dr2eq_.sComd = sComd6;
 
@@ -257,13 +284,13 @@ public:
 	char recv_buffer_[BUF_SIZE];
 	int misec_;
 
+	udp::endpoint GameEndpoint_;
+	std::vector<udp::endpoint> vUpCtrlEndpoint_;
+
 	//test
 	CMyTime mytimer_;
 
-	//S_CMD send_cmd_ = sComd99;
-	//EQU_STATUS equ_status_ = status99;
 	UpperToDrv up2dr_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, 0, 0 };
-	//DrvToUpper dr2up_ = { 0, status99,{ 0 },{ 0 },{ 0 },{ 0 } };
 	DrvToUpper dr2up_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, status99, 0 };
 	DrvToEqu dr2eq_ = { 0, sComd99,{ 0 },{ 0 },{ 0 },{ 0 } };
 	EquToDrv eq2dr_ = { 0, status99,{ 0 },{ 0 },{ 0 },{ 0 } };

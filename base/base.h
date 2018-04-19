@@ -59,10 +59,18 @@ typedef struct
 	float rMoto[6];
 }EquToDrv;// , DrvToUpper;
 
+enum Upper_Type
+{
+	TYPE_UNDEFINED = 0,
+	TYPE_EQU = 1,
+	TYPE_UPGAME = 2,
+	TYPE_UPCTRL = 3,
+	TYPE_DRV = 4,
+};
 
 typedef struct
 {
-	int type;//1 equ	2 up game	3 up control	4 drv
+	Upper_Type type;//1 equ	2 up game	3 up control	4 drv
 	int timestamp;
 }CustomHead;
 
