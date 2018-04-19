@@ -208,7 +208,6 @@ public:
 		bool isfirst = true;
 		clock_t cur,lst;
 
-		//CDriver::send_buffer_[0] = 'g';
 
 		while (true)
 		{
