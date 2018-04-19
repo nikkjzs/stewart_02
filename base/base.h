@@ -175,7 +175,7 @@ public:
 	void start_send()
 	{
 		//tmp
-		send_buffer_[0] = 'a';
+		//send_buffer_[0] = 'a';
 
 		socket_.async_send_to(boost::asio::buffer(send_buffer_), tar_endpoint_,
 			boost::asio::bind_executor(strand_, boost::bind(&CBase::handle_send, this))
