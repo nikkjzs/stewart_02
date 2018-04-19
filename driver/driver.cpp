@@ -215,6 +215,7 @@ public:
 
 		send_process_drv2up(msgip);
 
+		CBase::start_send();
 	}
 
 	//obsolete
