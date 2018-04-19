@@ -161,7 +161,7 @@ public:
 
 		udp::endpoint endpoint = msgip.endpoint;
 
-		
+		//the connection be dircard which customhead type unused 
 		if (endpoint.address().to_string() == eq)
 		{
 			recv_process_equ2drv(msgip);
