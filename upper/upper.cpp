@@ -146,6 +146,7 @@ public:
 
 		customhead.type = TYPE_UPGAME;
 		//upmutex.lock();
+		customhead.timestamp++;
 		up2dr = up2dr_;
 		//upmutex.unlock();
 
