@@ -243,7 +243,7 @@ public:
 		CustomHead ch = { TYPE_UNDEFINED, 0 };//
 		ch = *(CustomHead*)buf;
 
-		if (ch.timestamp >= lasttimestamp_)
+		if (ch.timestamp <= lasttimestamp_)
 		{
 			return;
 		}
