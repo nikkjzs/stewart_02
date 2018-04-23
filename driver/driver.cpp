@@ -237,14 +237,21 @@ public:
 	//drv从上位收
 	void recv_process_up2drv(CMsgIP msgip)
 	{
+		boost::mutex::scoped_lock scoptedlock(outputmutext_);
+
 		char* buf = msgip.buf;
 		CustomHead ch = { TYPE_UNDEFINED, 0 };//
-		UpperToDrv data = *(UpperToDrv*)(buf + sizeof(CustomHead));
+		ch = *(CustomHead*)buf;
+		if (ch.timestamp >= lasttimestamp_)
+		{
+			return;
+		}
 
+		UpperToDrv data = *(UpperToDrv*)(buf + sizeof(CustomHead));
+		
 		up2dr_ = data;
 
 		//send_process_drv2up(data);
-
 	}
 
 	//drv朝上位发
@@ -313,6 +320,9 @@ public:
 	udp::endpoint GameEndpoint_;
 	std::vector<udp::endpoint> vUpCtrlEndpoint_;
 
+	boost::mutex outputmutext_;
+
+	int lasttimestamp_;
 	//test
 	CMyTime mytimer_;
 
