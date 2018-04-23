@@ -49,7 +49,7 @@ public:
 
 	int getcmd()
 	{
-		int ret = 99;
+		static int ret = 99;
 		return ret;
 	}
 
