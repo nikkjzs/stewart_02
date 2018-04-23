@@ -30,6 +30,9 @@ public:
 			std::cout << "Please input cmd:" << std::endl;
 			//inputmutex.lock();
 			std::cin >> str;
+
+			cmd_ = std::stoi(str);
+
 			//inputmutex.unlock();
 		}
 	}
@@ -39,21 +42,21 @@ public:
 		group.create_thread(boost::bind(&CInput::loopgetinput, pIn));
 	}
 
-	int getcmd(int)
+	int getcmd()
 	{
 		//inputmutex.lock();
-		int ret = std::stoi(str);
 		//inputmutex.unlock();
-		return ret;
+		return cmd_;
 	}
 
-	int getcmd()
+	int getcmd(int)
 	{
 		static int ret = 99;
 		return ret;
 	}
 
 	std::string str = "0";
+	int cmd_ = 0;
 	boost::thread_group group;
 	boost::mutex inputmutex;
 };
