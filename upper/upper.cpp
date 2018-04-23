@@ -28,9 +28,9 @@ public:
 		while (true)
 		{
 			std::cout << "Please input cmd:" << std::endl;
-			//inputmutex.lock();
+			inputmutex.lock();
 			std::cin >> str;
-			//inputmutex.unlock();
+			inputmutex.unlock();
 		}
 	}
 
@@ -41,15 +41,15 @@ public:
 
 	int getcmd()
 	{
-		//inputmutex.lock();
+		inputmutex.lock();
 		int ret = std::stoi(str);
-		//inputmutex.unlock();
+		inputmutex.unlock();
 		return ret;
 	}
 
 	std::string str = "0";
 	boost::thread_group group;
-	//boost::mutex inputmutex;
+	boost::mutex inputmutex;
 };
 
 
