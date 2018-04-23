@@ -84,29 +84,11 @@ public:
 
 	virtual void process_recv_data(CMsgIP msgip)
 	{
-		//if (listRecv.empty() == false)
-		//{
-		//	CMsgIP msgip = listRecv.back();
-		//	listRecv.pop_back();
-		//	char* pBuf = msgip.buf;
-		//	if (pBuf[0] == 'a')
-		//	{
-		//		int i = 5;
-		//	}
-
-		//	if (pBuf[0] == 'g')
-		//	{
-		//		mytimer_.echofunc();
-		//	}
-
-		//}
-		//do nothing
 		workflow_branch(msgip);
 	}
 
 	void workflow_branch(CMsgIP msgip)
 	{
-		//char* pBuf = msgip.buf;
 		udp::endpoint endpoint = msgip.endpoint;
 		string drv = "125.125.122.83";
 		if (endpoint.address().to_string() == drv)
@@ -165,8 +147,6 @@ public:
 		eq2dr_.rComd = outStat;
 
 		send_process_equ2drv();
-
-		//start_send();
 	}
 
 	void send_process_equ2drv()
@@ -177,7 +157,6 @@ public:
 		CustomHead customhead = { TYPE_UNDEFINED, 0 };//
 		EquToDrv eq2dr = { 0 };
 
-		//eq2dr.rComd = equ_status_;
 		eq2dr = eq2dr_;
 
 		memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
@@ -191,8 +170,6 @@ public:
 		send_process_equ2drv();
 	}
 
-	//S_CMD recv_cmd_ = sComd99;
-	//EQU_STATUS equ_status_ = status0;
 	DrvToEqu dr2eq_ = { 0, sComd99, { 0 },{ 0 },{ 0 },{ 0 } };
 	EquToDrv eq2dr_ = { 0, status0,{ 0 },{ 0 },{ 0 },{ 0 } };
 	CMyTime mytimer_;

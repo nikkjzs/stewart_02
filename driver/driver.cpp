@@ -111,36 +111,14 @@ public:
 		group.join_all();
 	}
 
-	//void run_real(CDriver* pDriver)
-	//{
-	//	start_real_send();
-
-	//	group.create_thread(boost::bind(&CDriver::entry_realsend, pDriver));
-	//}
 
 	void entry()
 	{
 		CBase::io_context_.run();
 	}
 
-	//void entry_realsend()
-	//{
-	//	CDriver::io_context_.run();
-	//}
-
 	virtual void process_recv_data(CMsgIP msgip)
 	{
-		//if (listRecv.empty() == false)
-		//{
-		//	CMsgIP msgip = listRecv.back();
-		//	listRecv.pop_back();
-
-		//	//immediatly pump recv cmd
-		//	CBase::start_receive();//any timing, there is only one recv_cmd in the event queue.
-
-		//	workflow_branch(msgip);
-		//}
-
 		workflow_branch(msgip);
 	}
 
@@ -174,12 +152,8 @@ public:
 			{
 				vUpCtrlEndpoint_.push_back(msgip.endpoint);
 			}
-
-			//clientmutex.unlock();
 		}
 		
-		//pump
-		//CBase::start_receive();
 
 		udp::endpoint endpoint = msgip.endpoint;
 
@@ -196,8 +170,6 @@ public:
 			}
 			else
 			{
-				//clientmutex.lock();
-
 				for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
 				{
 					if (endpoint.address().to_string() == vUpCtrlEndpoint_[idx].address().to_string())
@@ -205,14 +177,8 @@ public:
 						recv_process_up2drv(msgip);
 					}
 				}
-				//clientmutex.unlock();
 			}
 		}
-
-		/*else if (endpoint.address().to_string() == up)
-		{
-			recv_process_up2drv(msgip);
-		}*/
 	}
 
 	//drv从设备收
@@ -266,8 +232,6 @@ public:
 		UpperToDrv data = *(UpperToDrv*)(buf + sizeof(CustomHead));
 		
 		up2dr_ = data;
-
-		//send_process_drv2up(data);
 	}
 
 	//drv朝上位发
@@ -292,7 +256,6 @@ public:
 		{
 			CustomHead customhead = { TYPE_UNDEFINED, 0 };//
 			dr2eq_.sComd = up2dr_.upper_cmd;
-			//dr2eq_.sComd = sComd6;
 
 			memcpy(CDriver::send_buffer_, &customhead, sizeof(customhead));
 			char* p = CDriver::send_buffer_ + sizeof(customhead);

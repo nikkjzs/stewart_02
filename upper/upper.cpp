@@ -28,12 +28,9 @@ public:
 		while (true)
 		{
 			std::cout << "Please input cmd:" << std::endl;
-			//inputmutex.lock();
 			std::cin >> str;
 
 			cmd_ = std::stoi(str);
-
-			//inputmutex.unlock();
 		}
 	}
 
@@ -44,8 +41,6 @@ public:
 
 	int getcmd()
 	{
-		//inputmutex.lock();
-		//inputmutex.unlock();
 		return cmd_;
 	}
 
@@ -81,11 +76,6 @@ public:
 		if (endpoint.address().to_string() == drv)
 		{
 			recv_process_drv2upper(msgip);
-
-			//if (pBuf[0] == 'a')
-			//{
-			//	int i = 5;
-			//}
 		}
 	}
 
@@ -97,9 +87,6 @@ public:
 
 		EQU_STATUS stat = (EQU_STATUS)data.equ_stat;
 
-
-		//send_cmd_ = sComd99;
-		//upmutex.lock();
 		switch (stat)
 		{
 		case status0://平台停止，等待开机
@@ -127,53 +114,34 @@ public:
 		default:
 			printf("unknown cmd\n");
 		}
-		//upmutex.unlock();
-		//test
-		//up2dr_.upper_cmd = pInput_->getcmd();
-
-		//send_process_upper2drv();
-
-		//start_send();
 	}
 
 	void send_process_upper2drv()
 	{
 		char buf[BUF_SIZE] = { 0 };
 
-		//todo
 		CustomHead customhead = { TYPE_UNDEFINED, 0 };
 		UpperToDrv up2dr = { 0 };
 
 		customhead.type = TYPE_UPGAME;
-		//upmutex.lock();
 		customhead.timestamp++;
 		up2dr = up2dr_;
-		//upmutex.unlock();
 
-		//if (equ_status_ != 3)
-		{
-			memcpy(CBase::send_buffer_,&customhead,sizeof(customhead));
-			char* p = CBase::send_buffer_ + sizeof(customhead);
-			memcpy(p, &up2dr, sizeof(up2dr));
-		}
-		//CBase::send_buffer_
+		memcpy(CBase::send_buffer_,&customhead,sizeof(customhead));
+		char* p = CBase::send_buffer_ + sizeof(customhead);
+		memcpy(p, &up2dr, sizeof(up2dr));
 	}
 
 
 	virtual void process_send_data()
 	{
-		//upmutex.lock();
 		up2dr_.upper_cmd = pInput_->getcmd();
-		//upmutex.unlock();
 
 		send_process_upper2drv();
 	}
 
-	//S_CMD send_cmd_ = sComd99;
-	//EQU_STATUS equ_status_ = status99;
 	UpperToDrv up2dr_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, 0, 0};
 	DrvToUpper dr2up_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, status99, 0 };
-	//DrvToUpper dr2up_ = { 0, status99, { 0 },{ 0 },{ 0 },{ 0 } };
 
 	CInput*	pInput_;
 };
