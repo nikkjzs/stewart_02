@@ -28,9 +28,9 @@ public:
 		while (true)
 		{
 			std::cout << "Please input cmd:" << std::endl;
-			inputmutex.lock();
+			//inputmutex.lock();
 			std::cin >> str;
-			inputmutex.unlock();
+			//inputmutex.unlock();
 		}
 	}
 
@@ -39,11 +39,17 @@ public:
 		group.create_thread(boost::bind(&CInput::loopgetinput, pIn));
 	}
 
+	int getcmd(int)
+	{
+		//inputmutex.lock();
+		int ret = std::stoi(str);
+		//inputmutex.unlock();
+		return ret;
+	}
+
 	int getcmd()
 	{
-		inputmutex.lock();
-		int ret = std::stoi(str);
-		inputmutex.unlock();
+		int ret = 99;
 		return ret;
 	}
 
@@ -90,7 +96,7 @@ public:
 
 
 		//send_cmd_ = sComd99;
-		upmutex.lock();
+		//upmutex.lock();
 		switch (stat)
 		{
 		case status0://平台停止，等待开机
@@ -118,7 +124,7 @@ public:
 		default:
 			printf("unknown cmd\n");
 		}
-		upmutex.unlock();
+		//upmutex.unlock();
 		//test
 		//up2dr_.upper_cmd = pInput_->getcmd();
 
@@ -136,9 +142,9 @@ public:
 		UpperToDrv up2dr = { 0 };
 
 		customhead.type = TYPE_UPGAME;
-		upmutex.lock();
+		//upmutex.lock();
 		up2dr = up2dr_;
-		upmutex.unlock();
+		//upmutex.unlock();
 
 		//if (equ_status_ != 3)
 		{
@@ -152,9 +158,9 @@ public:
 
 	virtual void process_send_data()
 	{
-		upmutex.lock();
+		//upmutex.lock();
 		up2dr_.upper_cmd = pInput_->getcmd();
-		upmutex.unlock();
+		//upmutex.unlock();
 
 		send_process_upper2drv();
 	}
