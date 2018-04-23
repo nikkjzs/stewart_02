@@ -243,6 +243,21 @@ public:
 		CustomHead ch = { TYPE_UNDEFINED, 0 };//
 		ch = *(CustomHead*)buf;
 
+		//game or controller
+		if (ch.type == TYPE_UPGAME)
+		{
+			int dbg = 1;
+		}
+		else if (ch.type == TYPE_UPCTRL)
+		{
+			int dbg = 1;
+		}
+		else
+		{
+			int dbg = 1;
+		}
+
+
 		if (ch.timestamp <= lasttimestamp_)
 		{
 			return;
