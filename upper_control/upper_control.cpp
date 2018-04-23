@@ -17,18 +17,17 @@
 
 
 using namespace std;
-
 using boost::asio::ip::udp;
 
-class CUpper : public CBase
+class CUpperCtrl : public CBase
 {
 public:
-	CUpper() : CBase()
+	CUpperCtrl() : CBase()
 	{
 		pInput_ = new CInput();
 		pInput_->run(pInput_);
 	}
-	
+
 
 	virtual void process_recv_data(CMsgIP msgip)
 	{
@@ -84,11 +83,11 @@ public:
 		CustomHead customhead = { TYPE_UNDEFINED, 0 };
 		UpperToDrv up2dr = { 0 };
 
-		customhead.type = TYPE_UPGAME;
+		customhead.type = TYPE_UPCTRL;
 		customhead.timestamp++;
 		up2dr = up2dr_;
 
-		memcpy(CBase::send_buffer_,&customhead,sizeof(customhead));
+		memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
 		char* p = CBase::send_buffer_ + sizeof(customhead);
 		memcpy(p, &up2dr, sizeof(up2dr));
 	}
@@ -101,7 +100,7 @@ public:
 		send_process_upper2drv();
 	}
 
-	UpperToDrv up2dr_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, 0, 0};
+	UpperToDrv up2dr_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, 0, 0 };
 	DrvToUpper dr2up_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, status99, 0 };
 
 	CInput*	pInput_;
@@ -110,10 +109,10 @@ public:
 
 int main()
 {
-	CBase* pUp = new CUpper();
+	CBase* pUp = new CUpperCtrl();
 	string dr = "125.125.122.83";
-	pUp->init(222, dr, 444);
+	pUp->init(111, dr, 444);
 	pUp->run(pUp, 1);
-    return 0;
+	return 0;
 }
 

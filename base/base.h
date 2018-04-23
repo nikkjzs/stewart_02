@@ -15,6 +15,8 @@
 
 #include <boost/container/list.hpp>
 
+#include <iostream>
+
 using boost::asio::ip::udp;
 using namespace std;
 
@@ -205,4 +207,44 @@ public:
 	char recv_buffer_[BUF_SIZE];
 
 	//boost::container::list<CMsgIP> listRecv;
+};
+
+
+
+
+
+class CInput
+{
+public:
+	void loopgetinput()
+	{
+		while (true)
+		{
+			std::cout << "Please input cmd:" << std::endl;
+			std::cin >> str;
+
+			cmd_ = std::stoi(str);
+		}
+	}
+
+	void run(CInput* pIn)
+	{
+		group.create_thread(boost::bind(&CInput::loopgetinput, pIn));
+	}
+
+	int getcmd()
+	{
+		return cmd_;
+	}
+
+	int getcmd(int)
+	{
+		static int ret = 99;
+		return ret;
+	}
+
+	std::string str = "0";
+	int cmd_ = 0;
+	boost::thread_group group;
+	boost::mutex inputmutex;
 };
