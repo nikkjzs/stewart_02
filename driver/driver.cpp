@@ -122,6 +122,68 @@ public:
 		workflow_branch(msgip);
 	}
 
+	//void workflow_branch(CMsgIP msgip)
+	//{
+	//	char* pBuf = msgip.buf;
+	//	CustomHead ch = *(CustomHead*)pBuf;
+
+	//	string eq = "192.168.2.151";
+	//	//string up = "192.168.2.37";
+	//	string echostr = msgip.endpoint.address().to_string();
+	//	if (ch.type == TYPE_UPGAME)
+	//	{
+	//		GameEndpoint_ = msgip.endpoint;
+	//	}
+	//	else if (ch.type == TYPE_UPCTRL)
+	//	{
+	//		clientmutex_.lock();
+	//		bool bExist = false;
+	//		for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
+	//		{
+	//			if (vUpCtrlEndpoint_[idx].address().to_string() == msgip.endpoint.address().to_string())
+	//			{
+	//				bExist = true;
+	//				break;
+	//			}
+	//		}
+
+	//		if (bExist == false)
+	//		{
+	//			vUpCtrlEndpoint_.push_back(msgip.endpoint);
+	//		}
+	//		clientmutex_.unlock();
+	//	}
+	//	
+	//	//////////client vector加锁
+	//	udp::endpoint endpoint = msgip.endpoint;
+
+	//	//the connection be dircard which customhead type unused 
+	//	if (endpoint.address().to_string() == eq)
+	//	{
+	//		recv_process_equ2drv(msgip);
+	//	}
+	//	else
+	//	{
+	//		if (endpoint.address().to_string() == GameEndpoint_.address().to_string())
+	//		{
+	//			recv_process_up2drv(msgip);
+	//		}
+	//		else
+	//		{
+	//			clientmutex_.lock();
+	//			for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
+	//			{
+	//				if (endpoint.address().to_string() == vUpCtrlEndpoint_[idx].address().to_string())
+	//				{
+	//					recv_process_up2drv(msgip);
+	//				}
+	//			}
+	//			clientmutex_.unlock();
+	//		}
+	//	}
+	//}
+
+
 	void workflow_branch(CMsgIP msgip)
 	{
 		char* pBuf = msgip.buf;
@@ -153,7 +215,7 @@ public:
 			}
 			clientmutex_.unlock();
 		}
-		
+
 		//////////client vector加锁
 		udp::endpoint endpoint = msgip.endpoint;
 
@@ -182,6 +244,7 @@ public:
 			}
 		}
 	}
+
 
 	//drv从设备收
 	void recv_process_equ2drv(CMsgIP msgip)
