@@ -272,8 +272,11 @@ public:
 
 		while (true)
 		{
+			//up2dr_ critical area
+			outputmutex_.lock();
 			CustomHead customhead = { TYPE_UNDEFINED, 0 };//
 			dr2eq_.sComd = up2dr_.upper_cmd;
+			outputmutex_.unlock();
 
 			memcpy(CDriver::send_buffer_, &customhead, sizeof(customhead));
 			char* p = CDriver::send_buffer_ + sizeof(customhead);
