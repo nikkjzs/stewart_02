@@ -26,7 +26,7 @@
 
 using boost::asio::ip::udp;
 
-boost::mutex clientmutex;
+//boost::mutex clientmutex;
 
 class CMyTime
 {
@@ -136,8 +136,7 @@ public:
 		}
 		else if (ch.type == TYPE_UPCTRL)
 		{
-			//clientmutex.lock();
-
+			clientmutex_.lock();
 			bool bExist = false;
 			for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
 			{
@@ -152,9 +151,10 @@ public:
 			{
 				vUpCtrlEndpoint_.push_back(msgip.endpoint);
 			}
+			clientmutex_.unlock();
 		}
 		
-
+		//////////client vector加锁
 		udp::endpoint endpoint = msgip.endpoint;
 
 		//the connection be dircard which customhead type unused 
@@ -170,6 +170,7 @@ public:
 			}
 			else
 			{
+				clientmutex_.lock();
 				for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
 				{
 					if (endpoint.address().to_string() == vUpCtrlEndpoint_[idx].address().to_string())
@@ -177,6 +178,7 @@ public:
 						recv_process_up2drv(msgip);
 					}
 				}
+				clientmutex_.unlock();
 			}
 		}
 	}
@@ -192,7 +194,13 @@ public:
 
 		send_process_drv2up(msgip);
 
-		CBase::start_send();
+		CDriver::start_send(CBase::tar_endpoint_);
+		clientmutex_.lock();
+		for (int i = 0; i < vUpCtrlEndpoint_.size(); i++)
+		{
+			CDriver::start_send(vUpCtrlEndpoint_[i]);
+		}
+		clientmutex_.unlock();
 	}
 
 	//obsolete
@@ -243,6 +251,16 @@ public:
 		memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
 		char* p = CBase::send_buffer_ + sizeof(customhead);
 		memcpy(p, &dr2up_, sizeof(dr2up_));
+	}
+
+	virtual void start_send(udp::endpoint tarEndpoint)
+	{
+		//tmp
+		//send_buffer_[0] = 'a';
+
+		socket_.async_send_to(boost::asio::buffer(send_buffer_), tar_endpoint_,
+			boost::asio::bind_executor(strand_, boost::bind(&CBase::handle_send, this))
+		);
 	}
 
 	//drv实时朝设备发
@@ -300,6 +318,7 @@ public:
 	std::vector<udp::endpoint> vUpCtrlEndpoint_;
 
 	boost::mutex outputmutex_;
+	boost::mutex clientmutex_;
 
 	int lasttimestamp_;
 	//test

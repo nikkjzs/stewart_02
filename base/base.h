@@ -174,7 +174,7 @@ public:
 		process_recv_data(lMsgIP);
 	}
 
-	void start_send()
+	virtual void start_send()
 	{
 		//tmp
 		//send_buffer_[0] = 'a';
