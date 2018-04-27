@@ -121,69 +121,7 @@ public:
 	{
 		workflow_branch(msgip);
 	}
-
-	//void workflow_branch(CMsgIP msgip)
-	//{
-	//	char* pBuf = msgip.buf;
-	//	CustomHead ch = *(CustomHead*)pBuf;
-
-	//	string eq = "192.168.2.151";
-	//	//string up = "192.168.2.37";
-	//	string echostr = msgip.endpoint.address().to_string();
-	//	if (ch.type == TYPE_UPGAME)
-	//	{
-	//		GameEndpoint_ = msgip.endpoint;
-	//	}
-	//	else if (ch.type == TYPE_UPCTRL)
-	//	{
-	//		clientmutex_.lock();
-	//		bool bExist = false;
-	//		for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
-	//		{
-	//			if (vUpCtrlEndpoint_[idx].address().to_string() == msgip.endpoint.address().to_string())
-	//			{
-	//				bExist = true;
-	//				break;
-	//			}
-	//		}
-
-	//		if (bExist == false)
-	//		{
-	//			vUpCtrlEndpoint_.push_back(msgip.endpoint);
-	//		}
-	//		clientmutex_.unlock();
-	//	}
-	//	
-	//	//////////client vector加锁
-	//	udp::endpoint endpoint = msgip.endpoint;
-
-	//	//the connection be dircard which customhead type unused 
-	//	if (endpoint.address().to_string() == eq)
-	//	{
-	//		recv_process_equ2drv(msgip);
-	//	}
-	//	else
-	//	{
-	//		if (endpoint.address().to_string() == GameEndpoint_.address().to_string())
-	//		{
-	//			recv_process_up2drv(msgip);
-	//		}
-	//		else
-	//		{
-	//			clientmutex_.lock();
-	//			for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
-	//			{
-	//				if (endpoint.address().to_string() == vUpCtrlEndpoint_[idx].address().to_string())
-	//				{
-	//					recv_process_up2drv(msgip);
-	//				}
-	//			}
-	//			clientmutex_.unlock();
-	//		}
-	//	}
-	//}
-
-
+	
 	void workflow_branch(CMsgIP msgip)
 	{
 		char* pBuf = msgip.buf;
@@ -192,56 +130,19 @@ public:
 		string eq = "192.168.2.151";
 		//string up = "192.168.2.37";
 		string echostr = msgip.endpoint.address().to_string();
-		if (ch.type == TYPE_UPGAME)
-		{
-			GameEndpoint_ = msgip.endpoint;
-		}
-		else if (ch.type == TYPE_UPCTRL)
-		{
-			clientmutex_.lock();
-			bool bExist = false;
-			for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
-			{
-				if (vUpCtrlEndpoint_[idx].address().to_string() == msgip.endpoint.address().to_string())
-				{
-					bExist = true;
-					break;
-				}
-			}
-
-			if (bExist == false)
-			{
-				vUpCtrlEndpoint_.push_back(msgip.endpoint);
-			}
-			clientmutex_.unlock();
-		}
-
-		//////////client vector加锁
 		udp::endpoint endpoint = msgip.endpoint;
 
-		//the connection be dircard which customhead type unused 
 		if (endpoint.address().to_string() == eq)
 		{
 			recv_process_equ2drv(msgip);
 		}
-		else
+		else if (ch.type == TYPE_UPGAME)
 		{
-			if (endpoint.address().to_string() == GameEndpoint_.address().to_string())
-			{
-				recv_process_up2drv(msgip);
-			}
-			else
-			{
-				clientmutex_.lock();
-				for (int idx = 0; idx < vUpCtrlEndpoint_.size(); idx++)
-				{
-					if (endpoint.address().to_string() == vUpCtrlEndpoint_[idx].address().to_string())
-					{
-						recv_process_up2drv(msgip);
-					}
-				}
-				clientmutex_.unlock();
-			}
+			recv_process_up2drv(msgip);
+		}
+		else if (ch.type == TYPE_UPCTRL)
+		{
+			recv_process_up2drv(msgip);
 		}
 	}
 
@@ -255,15 +156,9 @@ public:
 
 		eq2dr_ = data;
 
-		send_process_drv2up(msgip);
+		//send_process_drv2up(msgip);
 
-		CDriver::start_send(CBase::tar_endpoint_);
-		clientmutex_.lock();
-		for (int i = 0; i < vUpCtrlEndpoint_.size(); i++)
-		{
-			CDriver::start_send(vUpCtrlEndpoint_[i]);
-		}
-		clientmutex_.unlock();
+		//CDriver::start_send(CBase::tar_endpoint_);
 	}
 
 	//obsolete
@@ -302,11 +197,44 @@ public:
 
 		UpperToDrv data = *(UpperToDrv*)(buf + sizeof(CustomHead));
 		
+		//save up's data
+		outputmutex_.lock();
 		up2dr_ = data;
+		outputmutex_.unlock();
+	/////////////////////////////////	///////////////////////////
+		//cache buf,push to clients vector
+		CMsgIP* pRequest = new CMsgIP;
+		memset(pRequest->buf,0,sizeof(pRequest->buf));
+
+		send_process_drv2upctrl(*pRequest, msgip);
+
+		//huanchengwusuo
+		//clientcachemutex_.lock();
+		//vToUpCtrlCache_.push_back(toUpCtrlCache);
+		//int idx = vToUpCtrlCache_.size() - 1;
+		//clientcachemutex_.unlock();
+
+		//package
+
+		//pump send to asigned endpoint
+		CDriver::start_send(pRequest);
 	}
 
-	//drv朝上位发
-	void send_process_drv2up(CMsgIP msgip)
+	//朝上位control发
+	void send_process_drv2upctrl(CMsgIP& outmsgip, CMsgIP inmsgip)
+	{
+		outmsgip.endpoint = inmsgip.endpoint;
+
+		dr2up_.equ_stat = eq2dr_.rComd;
+
+		CustomHead customhead = { TYPE_DRV, 0 };//
+		memcpy(outmsgip.buf, &customhead, sizeof(customhead));
+		char* p = outmsgip.buf + sizeof(customhead);
+		memcpy(p, &dr2up_, sizeof(dr2up_));
+	}
+
+	//朝上位game发
+	void send_process_drv2upgame(CMsgIP msgip)
 	{
 		dr2up_.equ_stat = eq2dr_.rComd;
 
@@ -315,16 +243,13 @@ public:
 		char* p = CBase::send_buffer_ + sizeof(customhead);
 		memcpy(p, &dr2up_, sizeof(dr2up_));
 	}
-
-	virtual void start_send(udp::endpoint tarEndpoint)
-	{
-		//tmp
-		//send_buffer_[0] = 'a';
-
-		socket_.async_send_to(boost::asio::buffer(send_buffer_), tar_endpoint_,
-			boost::asio::bind_executor(strand_, boost::bind(&CBase::handle_send, this))
-		);
-	}
+	//////////////////////////////////////////////////////////////////
+	//virtual void start_send(udp::endpoint tarEndpoint)
+	//{
+	//	socket_.async_send_to(boost::asio::buffer(send_buffer_), tar_endpoint_,
+	//		boost::asio::bind_executor(strand_, boost::bind(&CBase::handle_send, this))
+	//	);
+	//}
 
 	//drv实时朝设备发
 	virtual void start_real_send()
@@ -372,6 +297,23 @@ public:
 		}
 	}
 
+	//void start_send(char* buf, udp::endpoint endpt,int idx)
+	//void start_send(char* buf, udp::endpoint endpt, int idx)
+	void start_send(CMsgIP* p)
+	{
+		socket_.async_send_to(boost::asio::buffer(p->buf), p->endpoint,
+			boost::asio::bind_executor(strand_, boost::bind(&CDriver::handle_send, this, p))
+		);
+	}
+
+	void handle_send(CMsgIP* p)
+	{
+		delete p;
+		//clientcachemutex_.lock();
+		//vToUpCtrlCache_.erase(vToUpCtrlCache_.begin() + idx);
+		//clientcachemutex_.unlock();
+	}
+
 	boost::asio::io_context io_context_;
 
 	udp::endpoint tar_endpoint_;
@@ -381,10 +323,12 @@ public:
 	int misec_;
 
 	udp::endpoint GameEndpoint_;
-	std::vector<udp::endpoint> vUpCtrlEndpoint_;
+	//std::vector<udp::endpoint> vUpCtrlEndpoint_;
+	
+	//std::vector<CMsgIP> vToUpCtrlCache_;
 
 	boost::mutex outputmutex_;
-	boost::mutex clientmutex_;
+	boost::mutex clientcachemutex_;
 
 	int lasttimestamp_;
 	//test

@@ -103,6 +103,7 @@ enum S_CMD
 
 
 #define BUF_SIZE 256
+//typedef char arycachebuf[BUF_SIZE];
 
 class CBase
 {
@@ -174,11 +175,15 @@ public:
 		);
 	}
 
+
+
 	void handle_send()
 	{
 		process_send_data();
 		start_send();
 	}
+
+
 
 	virtual void process_recv_data(CMsgIP lMsgIP)
 	{}
