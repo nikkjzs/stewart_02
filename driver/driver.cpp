@@ -50,7 +50,7 @@ public:
 			if (dur >= timeout)
 			{
 				lst_ = cur;
-				printf("%d\n", dur);
+				//printf("%d\n", dur);
 				return true;
 			}
 			else
@@ -72,7 +72,7 @@ public:
 			clock_t cur = clock();
 			clock_t dur = cur - lst_;
 			lst_ = cur;
-			printf("%d\n", dur);
+			//printf("%d\n", dur);
 		}
 	}
 
@@ -169,7 +169,7 @@ public:
 	//drv从上位收
 	void recv_process_up2drv(CMsgIP msgip)
 	{
-		boost::mutex::scoped_lock scopedlock(outputmutex_);
+		//boost::mutex::scoped_lock scopedlock(outputmutex_);
 
 		char* buf = msgip.buf;
 		CustomHead ch = { TYPE_UNDEFINED, 0 };//
@@ -198,9 +198,12 @@ public:
 		UpperToDrv data = *(UpperToDrv*)(buf + sizeof(CustomHead));
 		
 		//save up's data
+		std::cout << __LINE__ << std::endl;
 		outputmutex_.lock();
+		std::cout << __LINE__ << std::endl;
 		up2dr_ = data;
 		outputmutex_.unlock();
+		std::cout << __LINE__ << std::endl;
 	/////////////////////////////////	///////////////////////////
 		//cache buf,push to clients vector
 		CMsgIP* pRequest = new CMsgIP;
@@ -223,6 +226,8 @@ public:
 	//朝上位control发
 	void send_process_drv2upctrl(CMsgIP& outmsgip, CMsgIP inmsgip)
 	{
+		boost::mutex::scoped_lock scopedlock(outputmutex_);
+
 		outmsgip.endpoint = inmsgip.endpoint;
 
 		dr2up_.equ_stat = eq2dr_.rComd;
@@ -236,6 +241,8 @@ public:
 	//朝上位game发
 	void send_process_drv2upgame(CMsgIP msgip)
 	{
+		boost::mutex::scoped_lock scopedlock(outputmutex_);
+
 		dr2up_.equ_stat = eq2dr_.rComd;
 
 		CustomHead customhead = { TYPE_DRV, 0 };//
@@ -261,10 +268,13 @@ public:
 		while (true)
 		{
 			//up2dr_ critical area
+			std::cout << __LINE__ << std::endl;
 			outputmutex_.lock();
+			std::cout << __LINE__ << std::endl;
 			CustomHead customhead = { TYPE_UNDEFINED, 0 };//
 			dr2eq_.sComd = up2dr_.upper_cmd;
 			outputmutex_.unlock();
+			std::cout << __LINE__ << std::endl;
 
 			memcpy(CDriver::send_buffer_, &customhead, sizeof(customhead));
 			char* p = CDriver::send_buffer_ + sizeof(customhead);
