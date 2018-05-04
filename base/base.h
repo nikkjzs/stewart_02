@@ -70,9 +70,23 @@ enum Upper_Type
 	TYPE_DRV = 4,
 };
 
-typedef struct
+enum Driver_Stat
 {
+	DS_UNDEFINED,
+	DS_ACCEPTIABLE,
+	DS_BUSY,
+};
+
+
+
+typedef struct CustomHead
+{
+	CustomHead() : type(TYPE_UNDEFINED), isAccepted(false), timestamp(0)
+	{
+	}
 	Upper_Type type;//1 equ	2 up game	3 up control	4 drv
+	//Driver_Stat ds;
+	bool isAccepted;
 	int timestamp;
 }CustomHead;
 

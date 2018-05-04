@@ -151,7 +151,7 @@ public:
 	void recv_process_equ2drv(CMsgIP msgip)
 	{
 		char* buf = msgip.buf;
-		CustomHead ch = { TYPE_UNDEFINED, 0 };//
+		CustomHead ch;// = { TYPE_UNDEFINED, DS_UNDEFINED,0,0 };//
 		EquToDrv data = *(EquToDrv*)(buf + sizeof(CustomHead));
 
 		eq2dr_ = data;
@@ -172,7 +172,7 @@ public:
 		//boost::mutex::scoped_lock scopedlock(outputmutex_);
 
 		char* buf = msgip.buf;
-		CustomHead ch = { TYPE_UNDEFINED, 0 };//
+		CustomHead ch;// = { TYPE_UNDEFINED,DS_UNDEFINED,0, 0 };//
 		ch = *(CustomHead*)buf;
 
 		//game or controller
@@ -232,7 +232,9 @@ public:
 
 		dr2up_.equ_stat = eq2dr_.rComd;
 
-		CustomHead customhead = { TYPE_DRV, 0 };//
+		CustomHead customhead;// = { TYPE_DRV,DS_UNDEFINED,0, 0 };//
+		customhead.type = TYPE_DRV;
+
 		memcpy(outmsgip.buf, &customhead, sizeof(customhead));
 		char* p = outmsgip.buf + sizeof(customhead);
 		memcpy(p, &dr2up_, sizeof(dr2up_));
@@ -245,7 +247,8 @@ public:
 
 		dr2up_.equ_stat = eq2dr_.rComd;
 
-		CustomHead customhead = { TYPE_DRV, 0 };//
+		CustomHead customhead;// = { TYPE_DRV,DS_UNDEFINED,0, 0 };//
+		customhead.type = TYPE_DRV;
 		memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
 		char* p = CBase::send_buffer_ + sizeof(customhead);
 		memcpy(p, &dr2up_, sizeof(dr2up_));
@@ -271,7 +274,7 @@ public:
 			std::cout << __LINE__ << std::endl;
 			outputmutex_.lock();
 			std::cout << __LINE__ << std::endl;
-			CustomHead customhead = { TYPE_UNDEFINED, 0 };//
+			CustomHead customhead;// = { TYPE_UNDEFINED,DS_UNDEFINED,0, 0 };//
 			dr2eq_.sComd = up2dr_.upper_cmd;
 			outputmutex_.unlock();
 			std::cout << __LINE__ << std::endl;
@@ -348,6 +351,8 @@ public:
 	DrvToUpper dr2up_ = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sComd99, status99, 0 };
 	DrvToEqu dr2eq_ = { 0, sComd99,{ 0 },{ 0 },{ 0 },{ 0 } };
 	EquToDrv eq2dr_ = { 0, status99,{ 0 },{ 0 },{ 0 },{ 0 } };
+
+	Driver_Stat drstat_ = DS_ACCEPTIABLE;
 };
 
 using namespace std;

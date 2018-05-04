@@ -100,7 +100,7 @@ public:
 	void recv_process_drv2equ(CMsgIP msgip)
 	{
 		char* buf = msgip.buf;
-		CustomHead ch = { TYPE_UNDEFINED, 0 };//
+		CustomHead ch;// = { TYPE_UNDEFINED,DS_UNDEFINED,0, 0 };//
 		DrvToEqu data = *(DrvToEqu*)(buf + sizeof(CustomHead));
 
 		S_CMD cmd = (S_CMD)data.sComd;
@@ -154,7 +154,7 @@ public:
 		char buf[BUF_SIZE] = { 0 };
 
 		//todo
-		CustomHead customhead = { TYPE_UNDEFINED, 0 };//
+		CustomHead customhead;// = { TYPE_UNDEFINED, DS_UNDEFINED,0,0 };//
 		EquToDrv eq2dr = { 0 };
 
 		eq2dr = eq2dr_;
