@@ -154,11 +154,9 @@ public:
 		CustomHead ch;// = { TYPE_UNDEFINED, DS_UNDEFINED,0,0 };//
 		EquToDrv data = *(EquToDrv*)(buf + sizeof(CustomHead));
 
+		equstatmutex_.lock();
 		eq2dr_ = data;
-
-		//send_process_drv2up(msgip);
-
-		//CDriver::start_send(CBase::tar_endpoint_);
+		equstatmutex_.unlock();
 	}
 
 	//obsolete
@@ -169,8 +167,6 @@ public:
 	//drv从上位收
 	void recv_process_up2drv(CMsgIP msgip)
 	{
-		//boost::mutex::scoped_lock scopedlock(outputmutex_);
-
 		char* buf = msgip.buf;
 		CustomHead ch;// = { TYPE_UNDEFINED,DS_UNDEFINED,0, 0 };//
 		ch = *(CustomHead*)buf;
@@ -198,24 +194,22 @@ public:
 		UpperToDrv data = *(UpperToDrv*)(buf + sizeof(CustomHead));
 		
 		//save up's data
-		std::cout << __LINE__ << std::endl;
 		outputmutex_.lock();
-		std::cout << __LINE__ << std::endl;
 		up2dr_ = data;
 		outputmutex_.unlock();
-		std::cout << __LINE__ << std::endl;
-	/////////////////////////////////	///////////////////////////
+
 		//cache buf,push to clients vector
 		CMsgIP* pRequest = new CMsgIP;
 		memset(pRequest->buf,0,sizeof(pRequest->buf));
 
-		send_process_drv2upctrl(*pRequest, msgip);
-
-		//huanchengwusuo
-		//clientcachemutex_.lock();
-		//vToUpCtrlCache_.push_back(toUpCtrlCache);
-		//int idx = vToUpCtrlCache_.size() - 1;
-		//clientcachemutex_.unlock();
+		if (ch.type == TYPE_UPCTRL)
+		{
+			send_process_drv2upctrl(*pRequest, msgip);
+		}
+		else if (ch.type == TYPE_UPGAME)
+		{
+			send_process_drv2upgame(*pRequest, msgip);
+		}
 
 		//package
 
@@ -226,22 +220,39 @@ public:
 	//朝上位control发
 	void send_process_drv2upctrl(CMsgIP& outmsgip, CMsgIP inmsgip)
 	{
-		boost::mutex::scoped_lock scopedlock(outputmutex_);
+		//boost::mutex::scoped_lock scopedlock(outputmutex_);
 
-		outmsgip.endpoint = inmsgip.endpoint;
+		//outmsgip.endpoint = inmsgip.endpoint;
 
-		dr2up_.equ_stat = eq2dr_.rComd;
+		//dr2up_.equ_stat = eq2dr_.rComd;
 
-		CustomHead customhead;// = { TYPE_DRV,DS_UNDEFINED,0, 0 };//
-		customhead.type = TYPE_DRV;
+		//CustomHead customhead;// = { TYPE_DRV,DS_UNDEFINED,0, 0 };//
+		//customhead.type = TYPE_DRV;
 
-		memcpy(outmsgip.buf, &customhead, sizeof(customhead));
-		char* p = outmsgip.buf + sizeof(customhead);
-		memcpy(p, &dr2up_, sizeof(dr2up_));
+		//memcpy(outmsgip.buf, &customhead, sizeof(customhead));
+		//char* p = outmsgip.buf + sizeof(customhead);
+		//memcpy(p, &dr2up_, sizeof(dr2up_));
+
+		send_process_drv2up_impl(outmsgip, inmsgip);
 	}
 
 	//朝上位game发
-	void send_process_drv2upgame(CMsgIP msgip)
+	void send_process_drv2upgame(CMsgIP& outmsgip, CMsgIP inmsgip)
+	{
+		//boost::mutex::scoped_lock scopedlock(outputmutex_);
+
+		//dr2up_.equ_stat = eq2dr_.rComd;
+
+		//CustomHead customhead;// = { TYPE_DRV,DS_UNDEFINED,0, 0 };//
+		//customhead.type = TYPE_DRV;
+		//memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
+		//char* p = CBase::send_buffer_ + sizeof(customhead);
+		//memcpy(p, &dr2up_, sizeof(dr2up_));
+
+		send_process_drv2up_impl(outmsgip, inmsgip);
+	}
+
+	void send_process_drv2up_impl(CMsgIP& outmsgip, CMsgIP inmsgip)
 	{
 		boost::mutex::scoped_lock scopedlock(outputmutex_);
 
@@ -253,13 +264,6 @@ public:
 		char* p = CBase::send_buffer_ + sizeof(customhead);
 		memcpy(p, &dr2up_, sizeof(dr2up_));
 	}
-	//////////////////////////////////////////////////////////////////
-	//virtual void start_send(udp::endpoint tarEndpoint)
-	//{
-	//	socket_.async_send_to(boost::asio::buffer(send_buffer_), tar_endpoint_,
-	//		boost::asio::bind_executor(strand_, boost::bind(&CBase::handle_send, this))
-	//	);
-	//}
 
 	//drv实时朝设备发
 	virtual void start_real_send()
@@ -271,13 +275,10 @@ public:
 		while (true)
 		{
 			//up2dr_ critical area
-			std::cout << __LINE__ << std::endl;
 			outputmutex_.lock();
-			std::cout << __LINE__ << std::endl;
 			CustomHead customhead;// = { TYPE_UNDEFINED,DS_UNDEFINED,0, 0 };//
 			dr2eq_.sComd = up2dr_.upper_cmd;
 			outputmutex_.unlock();
-			std::cout << __LINE__ << std::endl;
 
 			memcpy(CDriver::send_buffer_, &customhead, sizeof(customhead));
 			char* p = CDriver::send_buffer_ + sizeof(customhead);
@@ -310,8 +311,6 @@ public:
 		}
 	}
 
-	//void start_send(char* buf, udp::endpoint endpt,int idx)
-	//void start_send(char* buf, udp::endpoint endpt, int idx)
 	void start_send(CMsgIP* p)
 	{
 		socket_.async_send_to(boost::asio::buffer(p->buf), p->endpoint,
@@ -322,9 +321,6 @@ public:
 	void handle_send(CMsgIP* p)
 	{
 		delete p;
-		//clientcachemutex_.lock();
-		//vToUpCtrlCache_.erase(vToUpCtrlCache_.begin() + idx);
-		//clientcachemutex_.unlock();
 	}
 
 	boost::asio::io_context io_context_;
@@ -336,12 +332,9 @@ public:
 	int misec_;
 
 	udp::endpoint GameEndpoint_;
-	//std::vector<udp::endpoint> vUpCtrlEndpoint_;
-	
-	//std::vector<CMsgIP> vToUpCtrlCache_;
 
 	boost::mutex outputmutex_;
-	boost::mutex clientcachemutex_;
+	boost::mutex equstatmutex_;
 
 	int lasttimestamp_;
 	//test
