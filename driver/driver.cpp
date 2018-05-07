@@ -266,12 +266,13 @@ public:
 			case status7:
 				isRequestSucess_Local = false;
 				break;
+
 			case status8:
 				::MessageBox(NULL,_T("err"), _T("err"),NULL);
 				isRequestSucess_Local = false;
 				break;
 			case status99:
-				::MessageBox(NULL, _T("err"), _T("err"), NULL);
+				//::MessageBox(NULL, _T("err"), _T("err"), NULL);
 				isRequestSucess_Local = false;
 				break;
 			default:
