@@ -81,12 +81,12 @@ enum Driver_Stat
 
 typedef struct CustomHead
 {
-	CustomHead() : type(TYPE_UNDEFINED), isAccepted(false), timestamp(0)
+	CustomHead() : type(TYPE_UNDEFINED), isRequestSucess(false), timestamp(0)
 	{
 	}
 	Upper_Type type;//1 equ	2 up game	3 up control	4 drv
 	//Driver_Stat ds;
-	bool isAccepted;
+	bool isRequestSucess;
 	int timestamp;
 }CustomHead;
 

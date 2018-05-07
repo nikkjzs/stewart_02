@@ -195,7 +195,11 @@ public:
 		
 		//save up's data
 		outputmutex_.lock();
-		up2dr_ = data;
+		//cmd filter
+		if (cmdfilter(data) == true)
+		{
+			up2dr_ = data;
+		}
 		outputmutex_.unlock();
 
 		//cache buf,push to clients vector
@@ -217,38 +221,78 @@ public:
 		CDriver::start_send(pRequest);
 	}
 
+
+	bool cmdfilter(UpperToDrv data)
+	{
+		int magicnum = data.upper_cmd;
+		if (magicnum != sComd0 && magicnum != sComd2 && magicnum != sComd4
+			&& magicnum != sComd6 && magicnum != sComd7 && magicnum != sComd8
+			&& magicnum != sComd99)
+		{
+			return false;
+		}
+
+		S_CMD cmd = (S_CMD)magicnum;
+
+		EQU_STATUS equstat = (EQU_STATUS)eq2dr_.rComd;
+
+		bool isRequestSucess_Local = true;
+		switch (equstat)
+		{
+			case status0:
+				if (cmd != sComd6)
+				{
+					isRequestSucess_Local = false;
+				}
+				break;
+			case status1:
+				isRequestSucess_Local = false;
+				break;
+			case status2:
+				if (cmd != sComd4 && cmd != sComd7)
+				{
+					isRequestSucess_Local = false;
+				}
+				break;
+			case status3:
+				if (cmd != sComd0)
+				{
+					isRequestSucess_Local = false;
+				}
+				break;
+			case status6:
+				isRequestSucess_Local = false;
+				break;
+			case status7:
+				isRequestSucess_Local = false;
+				break;
+			case status8:
+				::MessageBox(NULL,_T("err"), _T("err"),NULL);
+				isRequestSucess_Local = false;
+				break;
+			case status99:
+				::MessageBox(NULL, _T("err"), _T("err"), NULL);
+				isRequestSucess_Local = false;
+				break;
+			default:
+				::MessageBox(NULL, _T("err"), _T("err"), NULL);
+				isRequestSucess_Local = false;
+				break;
+		}
+
+		return isRequestSucess_Local;
+	}
+
+
 	//朝上位control发
 	void send_process_drv2upctrl(CMsgIP& outmsgip, CMsgIP inmsgip)
 	{
-		//boost::mutex::scoped_lock scopedlock(outputmutex_);
-
-		//outmsgip.endpoint = inmsgip.endpoint;
-
-		//dr2up_.equ_stat = eq2dr_.rComd;
-
-		//CustomHead customhead;// = { TYPE_DRV,DS_UNDEFINED,0, 0 };//
-		//customhead.type = TYPE_DRV;
-
-		//memcpy(outmsgip.buf, &customhead, sizeof(customhead));
-		//char* p = outmsgip.buf + sizeof(customhead);
-		//memcpy(p, &dr2up_, sizeof(dr2up_));
-
 		send_process_drv2up_impl(outmsgip, inmsgip);
 	}
 
 	//朝上位game发
 	void send_process_drv2upgame(CMsgIP& outmsgip, CMsgIP inmsgip)
 	{
-		//boost::mutex::scoped_lock scopedlock(outputmutex_);
-
-		//dr2up_.equ_stat = eq2dr_.rComd;
-
-		//CustomHead customhead;// = { TYPE_DRV,DS_UNDEFINED,0, 0 };//
-		//customhead.type = TYPE_DRV;
-		//memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
-		//char* p = CBase::send_buffer_ + sizeof(customhead);
-		//memcpy(p, &dr2up_, sizeof(dr2up_));
-
 		send_process_drv2up_impl(outmsgip, inmsgip);
 	}
 
@@ -271,7 +315,6 @@ public:
 		bool isfirst = true;
 		clock_t cur,lst;
 
-
 		while (true)
 		{
 			//up2dr_ critical area
@@ -283,7 +326,6 @@ public:
 			memcpy(CDriver::send_buffer_, &customhead, sizeof(customhead));
 			char* p = CDriver::send_buffer_ + sizeof(customhead);
 			memcpy(p, &dr2eq_, sizeof(dr2eq_));
-
 
 			if (isfirst == true)
 			{
@@ -303,8 +345,6 @@ public:
 					continue;
 				}
 			}
-
-
 
 			socket_.send_to(boost::asio::buffer(CDriver::send_buffer_), CDriver::tar_endpoint_);
 			mytimer_.echofunc();
@@ -345,6 +385,7 @@ public:
 	DrvToEqu dr2eq_ = { 0, sComd99,{ 0 },{ 0 },{ 0 },{ 0 } };
 	EquToDrv eq2dr_ = { 0, status99,{ 0 },{ 0 },{ 0 },{ 0 } };
 
+	
 	Driver_Stat drstat_ = DS_ACCEPTIABLE;
 };
 
