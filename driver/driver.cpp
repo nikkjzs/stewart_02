@@ -255,7 +255,7 @@ public:
 				}
 				break;
 			case status3:
-				if (cmd != sComd0)
+				if (cmd != sComd0 && cmd != sComd2 && cmd != sComd6 && cmd != sComd7)
 				{
 					isRequestSucess_Local = false;
 				}
