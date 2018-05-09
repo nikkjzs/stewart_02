@@ -196,7 +196,8 @@ public:
 		//save up's data
 		outputmutex_.lock();
 		//cmd filter
-		if (cmdfilter(data) == true)
+		bool iscmdsucessed = cmdfilter(data);
+		if (iscmdsucessed == true)
 		{
 			up2dr_ = data;
 		}
@@ -205,23 +206,27 @@ public:
 		//cache buf,push to clients vector
 		CMsgIP* pRequest = new CMsgIP;
 		memset(pRequest->buf,0,sizeof(pRequest->buf));
+		CustomHead* pCH = new CustomHead;
+		memset(pCH, 0, sizeof(*pCH));
+		pCH->isRequestSucess = iscmdsucessed;
 
 		if (ch.type == TYPE_UPCTRL)
 		{
-			send_process_drv2upctrl(*pRequest, msgip);
+			send_process_drv2upctrl(*pRequest, msgip, *pCH);
 		}
 		else if (ch.type == TYPE_UPGAME)
 		{
-			send_process_drv2upgame(*pRequest, msgip);
+			send_process_drv2upgame(*pRequest, msgip, *pCH);
 		}
 
 		//package
 
 		//pump send to asigned endpoint
-		CDriver::start_send(pRequest);
+		CDriver::start_send(pRequest, pCH);
 	}
 
-
+	///////////////////////////////
+	//把命令是否失败传回up去
 	bool cmdfilter(UpperToDrv data)
 	{
 		int magicnum = data.upper_cmd;
@@ -286,24 +291,24 @@ public:
 
 
 	//朝上位control发
-	void send_process_drv2upctrl(CMsgIP& outmsgip, CMsgIP inmsgip)
+	void send_process_drv2upctrl(CMsgIP& outmsgip, CMsgIP inmsgip, CustomHead incustomhead)
 	{
-		send_process_drv2up_impl(outmsgip, inmsgip);
+		send_process_drv2up_impl(outmsgip, inmsgip, incustomhead);
 	}
 
 	//朝上位game发
-	void send_process_drv2upgame(CMsgIP& outmsgip, CMsgIP inmsgip)
+	void send_process_drv2upgame(CMsgIP& outmsgip, CMsgIP inmsgip, CustomHead incustomhead)
 	{
-		send_process_drv2up_impl(outmsgip, inmsgip);
+		send_process_drv2up_impl(outmsgip, inmsgip, incustomhead);
 	}
 
-	void send_process_drv2up_impl(CMsgIP& outmsgip, CMsgIP inmsgip)
+	void send_process_drv2up_impl(CMsgIP& outmsgip, CMsgIP inmsgip, CustomHead incustomhead)
 	{
 		boost::mutex::scoped_lock scopedlock(outputmutex_);
 
 		dr2up_.equ_stat = eq2dr_.rComd;
 
-		CustomHead customhead;// = { TYPE_DRV,DS_UNDEFINED,0, 0 };//
+		CustomHead customhead = incustomhead;// = { TYPE_DRV,DS_UNDEFINED,0, 0 };//
 		customhead.type = TYPE_DRV;
 		memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
 		char* p = CBase::send_buffer_ + sizeof(customhead);
@@ -352,7 +357,7 @@ public:
 		}
 	}
 
-	void start_send(CMsgIP* p)
+	/*void start_send(CMsgIP* p)
 	{
 		socket_.async_send_to(boost::asio::buffer(p->buf), p->endpoint,
 			boost::asio::bind_executor(strand_, boost::bind(&CDriver::handle_send, this, p))
@@ -362,6 +367,19 @@ public:
 	void handle_send(CMsgIP* p)
 	{
 		delete p;
+	}*/
+
+	void start_send(CMsgIP* pMsgIP, CustomHead* pCH)
+	{
+		socket_.async_send_to(boost::asio::buffer(pMsgIP->buf), pMsgIP->endpoint,
+			boost::asio::bind_executor(strand_, boost::bind(&CDriver::handle_send, this, pMsgIP, pCH))
+		);
+	}
+
+	void handle_send(CMsgIP* p, CustomHead* pCH)
+	{
+		delete p;
+		delete pCH;
 	}
 
 	boost::asio::io_context io_context_;
