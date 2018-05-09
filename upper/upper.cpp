@@ -43,7 +43,7 @@ public:
 	void recv_process_drv2upper(CMsgIP msgip)
 	{
 		char* buf = msgip.buf;
-		CustomHead ch;// = { TYPE_UNDEFINED,DS_UNDEFINED,0, 0 };//
+		CustomHead inch = *(CustomHead*)msgip.buf;
 		DrvToUpper data = *(DrvToUpper*)(buf + sizeof(CustomHead));
 
 		EQU_STATUS stat = (EQU_STATUS)data.equ_stat;
