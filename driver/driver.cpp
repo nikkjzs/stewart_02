@@ -242,48 +242,48 @@ public:
 
 		EQU_STATUS equstat = (EQU_STATUS)eq2dr_.rComd;
 
-		bool isRequestSucess_Local = true;
+		bool isRequestSucess_Local = false;
 		switch (equstat)
 		{
 			case status0:
-				if (cmd != sComd6)
+				if (cmd == sComd6)
 				{
-					isRequestSucess_Local = false;
+					isRequestSucess_Local = true;
 				}
 				break;
 			case status1:
-				isRequestSucess_Local = false;
+				//isRequestSucess_Local = false;
 				break;
 			case status2:
-				if (cmd != sComd4 && cmd != sComd7)
+				if (cmd == sComd4 || cmd == sComd7)
 				{
-					isRequestSucess_Local = false;
+					isRequestSucess_Local = true;
 				}
 				break;
 			case status3:
-				if (cmd != sComd0 && cmd != sComd2 && cmd != sComd6 && cmd != sComd7)
+				if (cmd == sComd0 || cmd == sComd2 || cmd == sComd6 || cmd == sComd7)
 				{
-					isRequestSucess_Local = false;
+					isRequestSucess_Local = true;
 				}
 				break;
 			case status6:
-				isRequestSucess_Local = false;
+				//isRequestSucess_Local = false;
 				break;
 			case status7:
-				isRequestSucess_Local = false;
+				//isRequestSucess_Local = false;
 				break;
 
 			case status8:
 				::MessageBox(NULL,_T("err"), _T("err"),NULL);
-				isRequestSucess_Local = false;
+				//isRequestSucess_Local = false;
 				break;
 			case status99:
 				//::MessageBox(NULL, _T("err"), _T("err"), NULL);
-				isRequestSucess_Local = false;
+				//isRequestSucess_Local = false;
 				break;
 			default:
 				::MessageBox(NULL, _T("err"), _T("err"), NULL);
-				isRequestSucess_Local = false;
+				//isRequestSucess_Local = false;
 				break;
 		}
 
