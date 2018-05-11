@@ -316,8 +316,8 @@ public:
 
 		//outputmsgip 添加
 		memcpy(outmsgip.buf, &customhead, sizeof(customhead));
-		char* p = outmsgip.buf + sizeof(customhead);
-		memcpy(p, &dr2up_, sizeof(dr2up_));
+		char* pother = outmsgip.buf + sizeof(customhead);
+		memcpy(pother, &dr2up_, sizeof(dr2up_));
 	}
 
 	//drv实时朝设备发
