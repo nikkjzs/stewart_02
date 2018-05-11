@@ -220,6 +220,7 @@ public:
 		}
 
 		//package
+		string dbgstring = pRequest->endpoint.address().to_string();
 
 		//pump send to asigned endpoint
 		CDriver::start_send(pRequest, pCH);
