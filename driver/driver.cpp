@@ -311,11 +311,13 @@ public:
 
 		CustomHead customhead = incustomhead;// = { TYPE_DRV,DS_UNDEFINED,0, 0 };//
 		customhead.type = TYPE_DRV;
-		memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
-		char* p = CBase::send_buffer_ + sizeof(customhead);
-		memcpy(p, &dr2up_, sizeof(dr2up_));
+		//memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
+		//char* p = CBase::send_buffer_ + sizeof(customhead);
+		//memcpy(p, &dr2up_, sizeof(dr2up_));
 
 		//outputmsgip Ìí¼Ó
+		outmsgip.endpoint = inmsgip.endpoint;
+
 		memcpy(outmsgip.buf, &customhead, sizeof(customhead));
 		char* pother = outmsgip.buf + sizeof(customhead);
 		memcpy(pother, &dr2up_, sizeof(dr2up_));
