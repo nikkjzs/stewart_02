@@ -34,6 +34,10 @@ public:
 	{
 		udp::endpoint endpoint = msgip.endpoint;
 		CustomHead dbgch = *(CustomHead*)msgip.buf;
+		if (dbgch.isRequestSucess == true)
+		{
+			int dbgbreakpoint = 0xcc;
+		}
 		string drv = "125.125.122.83";
 		if (endpoint.address().to_string() == drv)
 		{
