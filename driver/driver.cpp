@@ -313,6 +313,11 @@ public:
 		memcpy(CBase::send_buffer_, &customhead, sizeof(customhead));
 		char* p = CBase::send_buffer_ + sizeof(customhead);
 		memcpy(p, &dr2up_, sizeof(dr2up_));
+
+		//outputmsgip 添加
+		memcpy(outmsgip.buf, &customhead, sizeof(customhead));
+		char* p = outmsgip.buf + sizeof(customhead);
+		memcpy(p, &dr2up_, sizeof(dr2up_));
 	}
 
 	//drv实时朝设备发
