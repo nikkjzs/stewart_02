@@ -33,6 +33,7 @@ public:
 	virtual void process_recv_data(CMsgIP msgip)
 	{
 		udp::endpoint endpoint = msgip.endpoint;
+		CustomHead dbgch = *(CustomHead*)msgip.buf;
 		string drv = "125.125.122.83";
 		if (endpoint.address().to_string() == drv)
 		{
