@@ -53,33 +53,34 @@ public:
 
 		EQU_STATUS stat = (EQU_STATUS)data.equ_stat;
 
-		switch (stat)
-		{
-		case status0://平台停止，等待开机
-			up2dr_.upper_cmd = sComd6;
-			break;
-		case status1:
-			break;
-		case status2:
-			up2dr_.upper_cmd = sComd4;
-			break;
-		case status3:
-			up2dr_.upper_cmd = sComd0;
-			break;
-		case status6:
-			up2dr_.upper_cmd = sComd6;
-			break;
-		case status7:
-			up2dr_.upper_cmd = sComd7;
-			break;
-		case status8:
-			//donothing
-			break;
-		case status99:
-			break;
-		default:
-			printf("unknown cmd\n");
-		}
+		//////////////////////////////////////////
+		//switch (stat)//待修改，不应该自动变状态了
+		//{
+		//case status0://平台停止，等待开机
+		//	up2dr_.upper_cmd = sComd6;
+		//	break;
+		//case status1:
+		//	break;
+		//case status2:
+		//	up2dr_.upper_cmd = sComd4;
+		//	break;
+		//case status3:
+		//	up2dr_.upper_cmd = sComd0;
+		//	break;
+		//case status6:
+		//	up2dr_.upper_cmd = sComd6;
+		//	break;
+		//case status7:
+		//	up2dr_.upper_cmd = sComd7;
+		//	break;
+		//case status8:
+		//	//donothing
+		//	break;
+		//case status99:
+		//	break;
+		//default:
+		//	printf("unknown cmd\n");
+		//}
 	}
 
 	void send_process_upper2drv()

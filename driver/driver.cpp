@@ -199,7 +199,8 @@ public:
 		bool iscmdsucessed = cmdfilter(data);
 		if (iscmdsucessed == true)
 		{
-			up2dr_ = data;
+			///////////////////////////////////////////
+			up2dr_ = data;//在命令改变后状态应该立刻改变，不应该收到两次相同的
 		}
 		outputmutex_.unlock();
 
@@ -331,6 +332,8 @@ public:
 
 		while (true)
 		{
+
+
 			//up2dr_ critical area
 			outputmutex_.lock();
 			CustomHead customhead;// = { TYPE_UNDEFINED,DS_UNDEFINED,0, 0 };//
