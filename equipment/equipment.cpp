@@ -142,7 +142,7 @@ public:
 				break;
 		}
 
-		printf("%d\n", outStat);
+		printf("%d\n", outStat);//
 
 		eq2dr_.rComd = outStat;
 
