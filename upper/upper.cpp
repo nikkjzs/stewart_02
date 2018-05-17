@@ -62,7 +62,7 @@ public:
 		//case status1:
 		//	break;
 		//case status2:
-		//	up2dr_.upper_cmd = sComd4;
+		//	up2dr_.upper_cmd = sComd4;  
 		//	break;
 		//case status3:
 		//	up2dr_.upper_cmd = sComd0;

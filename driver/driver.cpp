@@ -197,6 +197,7 @@ public:
 		outputmutex_.lock();
 		//cmd filter
 		bool iscmdsucessed = cmdfilter(data);
+
 		if (iscmdsucessed == true)
 		{
 			///////////////////////////////////////////
@@ -416,7 +417,7 @@ public:
 	EquToDrv eq2dr_ = { 0, status99,{ 0 },{ 0 },{ 0 },{ 0 } };
 
 	
-	Driver_Stat drstat_ = DS_ACCEPTIABLE;
+	//Driver_Stat drstat_ = DS_ACCEPTIABLE;
 };
 
 using namespace std;
