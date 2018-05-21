@@ -197,10 +197,11 @@ public:
 		outputmutex_.lock();
 		//cmd filter
 		bool iscmdsucessed = cmdfilter(data);
-
-		if (iscmdsucessed == true)
+		
+		if (iscmdsucessed == true && iscmdsucessed_ == false)
 		{
 			///////////////////////////////////////////
+			iscmdsucessed_ = iscmdsucessed;
 			up2dr_ = data;//在命令改变后状态应该立刻改变，不应该收到两次相同的
 		}
 		outputmutex_.unlock();
@@ -232,6 +233,11 @@ public:
 	//把命令是否失败传回up去
 	bool cmdfilter(UpperToDrv data)
 	{
+		if (iscmdsucessed_ == true)
+		{
+			return false;
+		}
+
 		int magicnum = data.upper_cmd;
 		if (magicnum != sComd0 && magicnum != sComd2 && magicnum != sComd4
 			&& magicnum != sComd6 && magicnum != sComd7 && magicnum != sComd8
@@ -333,14 +339,18 @@ public:
 
 		while (true)
 		{
-
+			while (iscmdsucessed_ == false)
+			{
+				;
+			}
 
 			//up2dr_ critical area
-			outputmutex_.lock();
-			CustomHead customhead;// = { TYPE_UNDEFINED,DS_UNDEFINED,0, 0 };//
+			outputmutex_.lock(); 
 			dr2eq_.sComd = up2dr_.upper_cmd;
+			iscmdsucessed_ = false;
 			outputmutex_.unlock();
 
+			CustomHead customhead;// = { TYPE_UNDEFINED,DS_UNDEFINED,0, 0 };//
 			memcpy(CDriver::send_buffer_, &customhead, sizeof(customhead));
 			char* p = CDriver::send_buffer_ + sizeof(customhead);
 			memcpy(p, &dr2eq_, sizeof(dr2eq_));
@@ -416,7 +426,7 @@ public:
 	DrvToEqu dr2eq_ = { 0, sComd99,{ 0 },{ 0 },{ 0 },{ 0 } };
 	EquToDrv eq2dr_ = { 0, status99,{ 0 },{ 0 },{ 0 },{ 0 } };
 
-	
+	bool iscmdsucessed_ = false;
 	//Driver_Stat drstat_ = DS_ACCEPTIABLE;
 };
 
