@@ -339,6 +339,7 @@ public:
 
 		while (true)
 		{
+			//2018/5/21 last 更新。多次accept上位机cmd待修正
 			while (iscmdsucessed_ == false)
 			{
 				;
