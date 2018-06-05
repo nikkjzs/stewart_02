@@ -93,7 +93,7 @@ public:
 		string drv = "125.125.122.83";
 		if (endpoint.address().to_string() == drv)
 		{
-			recv_process_drv2equ(msgip);
+			recv_process_drv2equ(msgip); 
 		}
 	}
 
